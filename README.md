@@ -1,39 +1,58 @@
-# .
+# ASA Inventory App (Frontend)
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue 3 single-page app for inventory management: dashboard, product catalog, product detail, and settings. Uses mock data in Vuex and a simulated login (localStorage token).
 
-## Recommended IDE Setup
+## Stack
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Vue 3** (Composition / Options API)
+- **Vite 7**
+- **Vue Router 4** (routes + auth guard via `asa_token` in `localStorage`)
+- **Vuex 4** (products, favorites, dashboard stats)
 
-## Recommended Browser Setup
+## Requirements
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- **Node.js** `^20.19.0` or `>=22.12.0` (see `package.json` → `engines`)
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+## Setup
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## Scripts
 
-```sh
-npm run dev
+| Command | Description |
+|--------|---------------|
+| `npm run dev` | Dev server with HMR (default Vite port) |
+| `npm run build` | Production build to `dist/` |
+| `npm run preview` | Serve the production build locally |
+
+## Project layout
+
+```
+src/
+  main.js              # App bootstrap, router, store, global CSS
+  App.vue
+  router/index.js      # Routes + beforeEach auth
+  store/index.js       # Vuex state, getters, login/addProduct actions
+  assets/styles/       # global.css
+  views/               # Login, Dashboard, Inventory, Product detail, Settings
+  components/
+    layout/            # AppLayout, Sidebar, TopBar
+    common/            # StatCard, Pagination, ModalWrapper
+    dashboard/         # Purchase overview, inventory summary, favorites, low stock
+    inventory/         # Overall inventory, products table, add product modal
+    product/           # Product detail sections
+public/
+  assets/              # Static images (logos, avatar, etc.)
 ```
 
-### Compile and Minify for Production
+Replace files under `public/assets/` with your real brand assets when ready.
 
-```sh
-npm run build
-```
-# Inventory-App-Frontend
+## IDE
+
+- [VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (disable Vetur if installed).
+
+## Configuration
+
+See [Vite Configuration Reference](https://vite.dev/config/) — project uses `@vitejs/plugin-vue` and `vite-plugin-vue-devtools` in `vite.config.js`.
