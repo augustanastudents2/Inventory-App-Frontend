@@ -1,45 +1,26 @@
 <template>
   <div class="products-table card">
     <div class="table-header">
-      <h2 class="section-title">Products</h2>
+      <h2 class="section-title">Items</h2>
       <div class="table-actions">
         <button class="btn-primary" @click="$emit('add-product')">
-          Add Product
+          Add Item
         </button>
-        <button class="btn-outline">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            width="16"
-            height="16"
-          >
-            <line x1="4" y1="21" x2="4" y2="14" />
-            <line x1="4" y1="10" x2="4" y2="3" />
-            <line x1="12" y1="21" x2="12" y2="12" />
-            <line x1="12" y1="8" x2="12" y2="3" />
-            <line x1="20" y1="21" x2="20" y2="16" />
-            <line x1="20" y1="12" x2="20" y2="3" />
-            <line x1="1" y1="14" x2="7" y2="14" />
-            <line x1="9" y1="8" x2="15" y2="8" />
-            <line x1="17" y1="16" x2="23" y2="16" />
-          </svg>
-          Filters
-        </button>
-        <button class="btn-outline">Download all</button>
       </div>
     </div>
 
     <table class="table">
       <thead>
         <tr>
-          <th>Products</th>
-          <th>Buying Price</th>
-          <th>Quantity</th>
-          <th>Threshold Value</th>
-          <th>Expiry Date</th>
-          <th>Availability</th>
+          <th>Item</th>
+          <th class="sortable" @click.stop="$emit('sort-change', { key: 'category' })">
+            Category <span class="sort-indicator">{{ sortIndicator('category') }}</span>
+          </th>
+          <th>Storage</th>
+          <th>Vendor</th>
+          <th>Qty</th>
+          <th>Status</th>
+          <th>Updated</th>
         </tr>
       </thead>
       <tbody>
@@ -50,14 +31,10 @@
           class="clickable-row"
         >
           <td>{{ product.name }}</td>
-          <td>${{ product.buyingPrice }}</td>
-          <td>
-            {{ product.quantity }} {{ product.unit }}
-          </td>
-          <td>
-            {{ product.thresholdValue }} {{ product.unit }}
-          </td>
-          <td>{{ product.expiryDate }}</td>
+          <td>{{ product.category || "—" }}</td>
+          <td>{{ storageText(product) }}</td>
+          <td>{{ product.vendor?.name || "—" }}</td>
+          <td>{{ product.quantity }} {{ product.unit }}</td>
           <td>
             <span
               :class="[
@@ -68,6 +45,7 @@
               {{ product.availability }}
             </span>
           </td>
+          <td>{{ formatDate(product.updatedAt) }}</td>
         </tr>
       </tbody>
     </table>
@@ -90,6 +68,8 @@ export default {
     products: Array,
     currentPage: { type: Number, default: 1 },
     totalPages: { type: Number, default: 1 },
+    sortKey: { type: String, default: "" },
+    sortDir: { type: String, default: "asc" },
   },
   computed: {
     paginatedProducts() {
@@ -98,6 +78,22 @@ export default {
     },
   },
   methods: {
+    sortIndicator(key) {
+      if (this.sortKey !== key) return ""
+      return this.sortDir === "desc" ? "↓" : "↑"
+    },
+    formatDate(iso) {
+      if (!iso) return "—"
+      const d = new Date(iso)
+      if (Number.isNaN(d.getTime())) return String(iso)
+      return d.toLocaleDateString()
+    },
+    storageText(p) {
+      const a = p?.storage?.area || ""
+      const s = p?.storage?.sub || ""
+      const text = [a, s].filter(Boolean).join(" · ")
+      return text || "—"
+    },
     availabilityClass(status) {
       switch (status) {
         case "In-stock":
@@ -185,6 +181,22 @@ export default {
   color: #858d9d;
   border-bottom: 1px solid #e5e7eb;
   background: #f9fafb;
+  white-space: nowrap;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  color: #111827;
+}
+
+.sort-indicator {
+  font-weight: 900;
+  margin-left: 6px;
+  color: #111827;
 }
 
 .table td {
@@ -192,6 +204,7 @@ export default {
   font-size: 14px;
   color: #1f2937;
   border-bottom: 1px solid #f3f4f6;
+  vertical-align: top;
 }
 
 .clickable-row {

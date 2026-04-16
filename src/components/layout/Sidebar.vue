@@ -64,6 +64,26 @@
     </nav>
 
     <div class="sidebar-bottom">
+      <router-link
+        to="/public"
+        class="nav-item"
+        :class="{ active: $route.path === '/public' }"
+      >
+        <svg
+          class="nav-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M2 12h20" />
+          <path d="M12 2a15.3 15.3 0 010 20" />
+          <path d="M12 2a15.3 15.3 0 000 20" />
+        </svg>
+        <span>Public View</span>
+      </router-link>
+
       <button class="nav-item logout" @click="handleLogout">
         <svg
           class="nav-icon"
@@ -165,6 +185,8 @@ export default {
 .sidebar-bottom {
   padding: 16px 0;
   border-top: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
 }
 
 .logout:hover {

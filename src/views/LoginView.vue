@@ -49,15 +49,6 @@
           <button type="submit" class="btn-signin" :disabled="loading">
             {{ loading ? "Signing in..." : "Sign in" }}
           </button>
-
-          <button type="button" class="btn-google" @click="handleGoogleSignIn">
-            <img
-              src="/assets/google-icon.png"
-              alt="Google"
-              class="google-icon"
-            />
-            Sign in with Google
-          </button>
         </form>
       </div>
     </div>
@@ -89,10 +80,6 @@ export default {
       } finally {
         this.loading = false
       }
-    },
-    handleGoogleSignIn() {
-      // Implement Google OAuth
-      console.log("Google Sign In")
     },
   },
 }
@@ -231,27 +218,4 @@ export default {
   opacity: 0.7;
 }
 
-.btn-google {
-  padding: 12px;
-  background: #fff;
-  border: 1px solid #d0d5dd;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #344054;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  transition: background 0.2s;
-}
-
-.btn-google:hover {
-  background: #f9fafb;
-}
-
-.google-icon {
-  width: 24px;
-  height: 24px;
-}
 </style>

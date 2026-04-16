@@ -33,16 +33,12 @@
 
     <div class="stock-summary">
       <div class="stock-row">
-        <span class="stock-label">Opening Stock</span>
-        <span class="stock-value">{{ product.openingStock }}</span>
+        <span class="stock-label">Quantity</span>
+        <span class="stock-value">{{ product.quantity }} {{ product.unit }}</span>
       </div>
       <div class="stock-row">
-        <span class="stock-label">Remaining Stock</span>
-        <span class="stock-value">{{ product.remainingStock }}</span>
-      </div>
-      <div class="stock-row">
-        <span class="stock-label">On the way</span>
-        <span class="stock-value">{{ product.onTheWay }}</span>
+        <span class="stock-label">Status</span>
+        <span class="stock-value">{{ product.availability }}</span>
       </div>
       <div class="stock-row">
         <span class="stock-label">Threshold value</span>

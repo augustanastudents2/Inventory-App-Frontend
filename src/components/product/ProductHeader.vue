@@ -1,6 +1,9 @@
 <template>
   <div class="product-header">
-    <h1 class="product-name">{{ product.name }}</h1>
+    <div class="left">
+      <button class="btn-link" @click="$emit('back')">← Back</button>
+      <h1 class="product-name">{{ product.name }}</h1>
+    </div>
     <div class="header-actions">
       <button class="btn-edit" @click="$emit('edit')">
         <svg
@@ -20,9 +23,10 @@
         </svg>
         Edit
       </button>
-      <button class="btn-download" @click="$emit('download')">
-        Download
+      <button class="btn-outline" @click="$emit('adjust-stock')">
+        Adjust Stock
       </button>
+      <button class="btn-danger" @click="$emit('delete')">Delete</button>
     </div>
   </div>
 </template>
@@ -42,6 +46,26 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #1a73e8;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
 }
 
 .product-name {
@@ -73,8 +97,8 @@ export default {
   background: #f5f6fa;
 }
 
-.btn-download {
-  padding: 8px 20px;
+.btn-outline {
+  padding: 8px 16px;
   background: #fff;
   color: #374151;
   border: 1px solid #d1d5db;
@@ -84,7 +108,22 @@ export default {
   transition: all 0.2s;
 }
 
-.btn-download:hover {
+.btn-outline:hover {
   background: #f5f6fa;
+}
+
+.btn-danger {
+  padding: 8px 16px;
+  background: #fff;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-danger:hover {
+  background: #fef2f2;
 }
 </style>

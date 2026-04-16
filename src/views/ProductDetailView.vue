@@ -4,37 +4,33 @@
       <ProductHeader
         :product="product"
         @edit="handleEdit"
-        @download="handleDownload"
+        @adjust-stock="showAdjustModal = true"
+        @delete="handleDelete"
+        @back="goBack"
       />
 
-      <ProductTabs v-model="activeTab" />
-
       <div class="product-content">
-        <div class="product-left" v-if="activeTab === 'overview'">
-          <PrimaryDetails :product="product" />
-          <SupplierDetails :supplier="product.supplier" />
-          <StockLocations :locations="product.stockLocations" />
-        </div>
-
-        <div class="product-left" v-else-if="activeTab === 'purchases'">
-          <div class="placeholder-content">
-            <p>Purchases content will be displayed here.</p>
+        <div class="top-grid">
+          <div class="product-left">
+            <PrimaryDetails :product="product" />
+          </div>
+          <div class="product-right">
+            <StockVsThresholdChart
+              :quantity="product.quantity"
+              :threshold="product.thresholdValue"
+              :unit="product.unit"
+            />
           </div>
         </div>
 
-        <div class="product-left" v-else-if="activeTab === 'adjustments'">
-          <div class="placeholder-content">
-            <p>Adjustments content will be displayed here.</p>
-          </div>
+        <div class="full-width">
+          <StockHistoryChart
+            :events="product.stockHistory"
+            :createdAt="product.createdAt"
+            :currentQuantity="product.quantity"
+          />
+          <StockHistory :events="product.stockHistory" />
         </div>
-
-        <div class="product-left" v-else-if="activeTab === 'history'">
-          <div class="placeholder-content">
-            <p>History content will be displayed here.</p>
-          </div>
-        </div>
-
-        <ProductImageStock :product="product" class="product-right" />
       </div>
     </div>
 
@@ -44,32 +40,50 @@
         >← Back to Inventory</router-link
       >
     </div>
+
+    <ProductFormModal
+      :visible="showEditModal"
+      mode="edit"
+      :initialProduct="product"
+      @close="showEditModal = false"
+      @save="handleSaveEdit"
+    />
+
+    <AdjustStockModal
+      :visible="showAdjustModal"
+      :product="product"
+      @close="showAdjustModal = false"
+      @apply="handleAdjustStock"
+    />
   </AppLayout>
 </template>
 
 <script>
 import AppLayout from "../components/layout/AppLayout.vue"
 import ProductHeader from "../components/product/ProductHeader.vue"
-import ProductTabs from "../components/product/ProductTabs.vue"
 import PrimaryDetails from "../components/product/PrimaryDetails.vue"
-import SupplierDetails from "../components/product/SupplierDetails.vue"
-import StockLocations from "../components/product/StockLocations.vue"
-import ProductImageStock from "../components/product/ProductImageStock.vue"
+import ProductFormModal from "../components/product/ProductFormModal.vue"
+import AdjustStockModal from "../components/product/AdjustStockModal.vue"
+import StockHistory from "../components/product/StockHistory.vue"
+import StockHistoryChart from "../components/product/StockHistoryChart.vue"
+import StockVsThresholdChart from "../components/product/StockVsThresholdChart.vue"
 
 export default {
   name: "ProductDetailView",
   components: {
     AppLayout,
     ProductHeader,
-    ProductTabs,
     PrimaryDetails,
-    SupplierDetails,
-    StockLocations,
-    ProductImageStock,
+    StockHistoryChart,
+    StockHistory,
+    StockVsThresholdChart,
+    ProductFormModal,
+    AdjustStockModal,
   },
   data() {
     return {
-      activeTab: "overview",
+      showEditModal: false,
+      showAdjustModal: false,
     }
   },
   computed: {
@@ -80,10 +94,47 @@ export default {
   },
   methods: {
     handleEdit() {
-      console.log("Edit product:", this.product.id)
+      this.showEditModal = true
     },
-    handleDownload() {
-      console.log("Download product:", this.product.id)
+    handleSaveEdit(updates) {
+      const payload = { ...updates, id: this.product.id }
+
+      // Upsert Settings data from free-text inputs
+      if (payload.category) this.$store.dispatch("addCategory", payload.category)
+      if (payload.vendor?.name)
+        this.$store.dispatch("addVendor", {
+          name: payload.vendor.name,
+          contact: payload.vendor.contact || "",
+        })
+      if (payload.storage?.area || payload.storage?.sub)
+        this.$store.dispatch("addStorageLocation", {
+          area: payload.storage.area || "",
+          sub: payload.storage.sub || "",
+        })
+      if (Array.isArray(payload.tags)) {
+        payload.tags.forEach((t) => this.$store.dispatch("addTag", t))
+      }
+
+      delete payload.tagsInput
+      delete payload.storageArea
+      delete payload.storageSub
+      delete payload.vendorName
+      delete payload.vendorContact
+      this.$store.dispatch("updateProduct", payload)
+      this.showEditModal = false
+    },
+    handleAdjustStock(payload) {
+      this.$store.dispatch("adjustStock", payload)
+      this.showAdjustModal = false
+    },
+    handleDelete() {
+      const ok = window.confirm("Delete this product? This cannot be undone.")
+      if (!ok) return
+      this.$store.dispatch("deleteProduct", this.product.id)
+      this.$router.push("/inventory")
+    },
+    goBack() {
+      this.$router.push("/inventory")
     },
   },
 }
@@ -98,9 +149,16 @@ export default {
 }
 
 .product-content {
-  display: flex;
-  gap: 40px;
   margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.top-grid {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
 }
 
 .product-left {
@@ -109,13 +167,21 @@ export default {
 
 .product-right {
   flex: 1;
+  min-width: 280px;
 }
 
-.placeholder-content {
-  padding: 40px;
-  text-align: center;
-  color: #9ca3af;
-  font-size: 16px;
+.full-width {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .top-grid {
+    flex-direction: column;
+  }
+  .product-right {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 .not-found {
