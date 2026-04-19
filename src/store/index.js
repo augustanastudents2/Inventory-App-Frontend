@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import api from "../api";
 
 function computeAvailability(quantity, thresholdValue) {
   if (quantity === 0) return "Out of stock";
@@ -7,272 +8,15 @@ function computeAvailability(quantity, thresholdValue) {
   return "In-stock";
 }
 
-function nowIso() {
-  return new Date().toISOString();
-}
-
 export default createStore({
   state: {
-    user: { id: 1, name: "ASA Admin", email: "admin@asa.com", role: "Admin" },
-    users: [
-      { id: 1, name: "ASA Admin", email: "admin@asa.com", role: "Admin" },
-      { id: 2, name: "Staff User", email: "staff@asa.com", role: "Staff" },
-    ],
-    categories: [
-      "Casino Night Event",
-      "Art Supplies",
-      "Food Service",
-      "Cleaning",
-      "General",
-    ],
-    tags: ["Casino Night", "Decor", "Kitchen", "Audio/Visual"],
-    storageLocations: [
-      { area: "Storage Room 1", sub: "Shelf 1" },
-      { area: "Storage Room 1", sub: "Shelf 2" },
-      { area: "Storage Room 2", sub: "Shelf 1" },
-    ],
-    vendors: [{ name: "Amazon", contact: "" }],
-    products: [
-      {
-        id: "456567",
-        name: "Maggi",
-        description: "Instant noodles for events.",
-        buyingPrice: 430,
-        quantity: 43,
-        unit: "Packets",
-        thresholdValue: 12,
-        expiryDate: "11/12/22",
-        availability: computeAvailability(43, 12),
-        category: "Food Service",
-        tags: ["Kitchen"],
-        image: null,
-        vendor: { name: "Ronald Martin", contact: "98789 86757" },
-        storage: { area: "Storage Room 1", sub: "Shelf 1" },
-        openingStock: 40,
-        remainingStock: 34,
-        onTheWay: 15,
-        stockLocations: [
-          { storeName: "Sulur Branch", stockInHand: 15 },
-          { storeName: "Singanallur Branch", stockInHand: 19 },
-        ],
-        createdAt: "2026-01-10T10:15:00.000Z",
-        updatedAt: "2026-01-10T10:15:00.000Z",
-      },
-      {
-        id: "456568",
-        name: "Bru",
-        description: "",
-        buyingPrice: 257,
-        quantity: 22,
-        unit: "Packets",
-        thresholdValue: 12,
-        expiryDate: "21/12/22",
-        availability: computeAvailability(22, 12),
-        category: "Beverages",
-        tags: [],
-        image: null,
-        vendor: { name: "John Doe", contact: "98765 43210" },
-        storage: { area: "Storage Room 1", sub: "Shelf 2" },
-        openingStock: 30,
-        remainingStock: 0,
-        onTheWay: 10,
-        stockLocations: [],
-        createdAt: "2026-01-12T09:00:00.000Z",
-        updatedAt: "2026-01-12T09:00:00.000Z",
-      },
-      {
-        id: "456569",
-        name: "Red Bull",
-        description: "",
-        buyingPrice: 405,
-        quantity: 36,
-        unit: "Packets",
-        thresholdValue: 9,
-        expiryDate: "5/12/22",
-        availability: computeAvailability(36, 9),
-        category: "Beverages",
-        tags: [],
-        image: null,
-        vendor: { name: "Jane Smith", contact: "91234 56789" },
-        storage: { area: "Storage Room 2", sub: "Shelf 1" },
-        openingStock: 50,
-        remainingStock: 36,
-        onTheWay: 5,
-        stockLocations: [],
-        createdAt: "2026-01-15T13:22:00.000Z",
-        updatedAt: "2026-01-15T13:22:00.000Z",
-      },
-      {
-        id: "456570",
-        name: "Bourn Vita",
-        description: "",
-        buyingPrice: 502,
-        quantity: 14,
-        unit: "Packets",
-        thresholdValue: 6,
-        expiryDate: "8/12/22",
-        availability: computeAvailability(14, 6),
-        category: "Beverages",
-        tags: [],
-        image: null,
-        vendor: { name: "Mike Johnson", contact: "99876 54321" },
-        storage: { area: "Storage Room 2", sub: "Shelf 1" },
-        openingStock: 20,
-        remainingStock: 0,
-        onTheWay: 8,
-        stockLocations: [],
-        createdAt: "2026-01-16T08:05:00.000Z",
-        updatedAt: "2026-01-16T08:05:00.000Z",
-      },
-      {
-        id: "456571",
-        name: "Horlicks",
-        description: "",
-        buyingPrice: 530,
-        quantity: 5,
-        unit: "Packets",
-        thresholdValue: 5,
-        expiryDate: "9/1/23",
-        availability: computeAvailability(5, 5),
-        category: "Beverages",
-        tags: [],
-        image: null,
-        vendor: { name: "Sarah Lee", contact: "98001 23456" },
-        storage: { area: "Storage Room 1", sub: "Shelf 1" },
-        openingStock: 15,
-        remainingStock: 5,
-        onTheWay: 3,
-        stockLocations: [],
-        createdAt: "2026-01-17T11:45:00.000Z",
-        updatedAt: "2026-01-17T11:45:00.000Z",
-      },
-      {
-        id: "456572",
-        name: "Harpic",
-        description: "",
-        buyingPrice: 605,
-        quantity: 10,
-        unit: "Packets",
-        thresholdValue: 5,
-        expiryDate: "9/1/23",
-        availability: computeAvailability(10, 5),
-        category: "Cleaning",
-        tags: [],
-        image: null,
-        vendor: { name: "Tom Brown", contact: "97654 32100" },
-        storage: { area: "Storage Room 1", sub: "Shelf 2" },
-        openingStock: 25,
-        remainingStock: 10,
-        onTheWay: 7,
-        stockLocations: [],
-        createdAt: "2026-01-20T16:00:00.000Z",
-        updatedAt: "2026-01-20T16:00:00.000Z",
-      },
-      {
-        id: "456573",
-        name: "Ariel",
-        description: "",
-        buyingPrice: 408,
-        quantity: 23,
-        unit: "Packets",
-        thresholdValue: 7,
-        expiryDate: "15/12/23",
-        availability: computeAvailability(23, 7),
-        category: "Cleaning",
-        tags: [],
-        image: null,
-        vendor: { name: "Lisa White", contact: "96543 21098" },
-        storage: { area: "Storage Room 2", sub: "Shelf 1" },
-        openingStock: 30,
-        remainingStock: 0,
-        onTheWay: 12,
-        stockLocations: [],
-        createdAt: "2026-01-21T10:30:00.000Z",
-        updatedAt: "2026-01-21T10:30:00.000Z",
-      },
-      {
-        id: "456574",
-        name: "Scotch Brite",
-        description: "",
-        buyingPrice: 359,
-        quantity: 43,
-        unit: "Packets",
-        thresholdValue: 8,
-        expiryDate: "6/6/23",
-        availability: computeAvailability(43, 8),
-        category: "Cleaning",
-        tags: [],
-        image: null,
-        vendor: { name: "David Green", contact: "95432 10987" },
-        storage: { area: "Storage Room 1", sub: "Shelf 2" },
-        openingStock: 50,
-        remainingStock: 43,
-        onTheWay: 0,
-        stockLocations: [],
-        createdAt: "2026-01-22T14:18:00.000Z",
-        updatedAt: "2026-01-22T14:18:00.000Z",
-      },
-      {
-        id: "456575",
-        name: "Coca cola",
-        description: "",
-        buyingPrice: 205,
-        quantity: 41,
-        unit: "Packets",
-        thresholdValue: 10,
-        expiryDate: "11/11/22",
-        availability: computeAvailability(41, 10),
-        category: "Beverages",
-        tags: [],
-        image: null,
-        vendor: { name: "Amy Taylor", contact: "94321 09876" },
-        storage: { area: "Storage Room 2", sub: "Shelf 1" },
-        openingStock: 60,
-        remainingStock: 41,
-        onTheWay: 20,
-        stockLocations: [],
-        createdAt: "2026-01-23T09:40:00.000Z",
-        updatedAt: "2026-01-23T09:40:00.000Z",
-      },
-    ],
-    favorites: [
-      {
-        name: "Surf Excel",
-        initialQuantity: 30,
-        remainingQuantity: 12,
-        price: 100,
-      },
-      { name: "Rin", initialQuantity: 21, remainingQuantity: 15, price: 207 },
-      {
-        name: "Parle G",
-        initialQuantity: 19,
-        remainingQuantity: 17,
-        price: 105,
-      },
-    ],
-    lowStock: [
-      { name: "Tata Salt", remainingQuantity: 10, unit: "Packet", image: null },
-      { name: "Lays", remainingQuantity: 15, unit: "Packet", image: null },
-      { name: "Lays", remainingQuantity: 15, unit: "Packet", image: null },
-    ],
-    overallInventory: {
-      categories: 14,
-      totalProducts: 868,
-      revenue: 25000,
-      topSellingCount: 5,
-      topSellingCost: 2500,
-      lowStockOrdered: 12,
-      lowStockNotInStock: 2,
-    },
-    purchaseOverview: {
-      purchase: 82,
-      cost: 13573,
-      cancel: 5,
-    },
-    inventorySummary: {
-      quantityInHand: 868,
-      numberOfCategories: 21,
-    },
+    user: null,
+    users: [],
+    categories: [],
+    tags: [],
+    storageLocations: [],
+    vendors: [],
+    products: [],
   },
   getters: {
     isAdmin: (state) => state.user?.role === "Admin",
@@ -291,15 +35,23 @@ export default createStore({
     SET_USER(state, user) {
       state.user = user;
     },
-    ADD_USER(state, user) {
-      state.users.push({ ...user, id: Date.now() });
+    SET_USERS(state, users) {
+      state.users = users;
     },
-    UPDATE_USER_ROLE(state, { userId, role }) {
-      const user = state.users.find((u) => u.id === userId);
-      if (user) user.role = role;
+    SET_PRODUCTS(state, products) {
+      state.products = products;
     },
-    DELETE_USER(state, userId) {
-      state.users = state.users.filter((u) => u.id !== userId);
+    SET_CATEGORIES(state, categories) {
+      state.categories = categories.map(c => c.name);
+    },
+    SET_TAGS(state, tags) {
+      state.tags = tags.map(t => t.name);
+    },
+    SET_STORAGE_LOCATIONS(state, locations) {
+      state.storageLocations = locations;
+    },
+    SET_VENDORS(state, vendors) {
+      state.vendors = vendors;
     },
     ADD_PRODUCT(state, product) {
       state.products.push(product);
@@ -313,261 +65,206 @@ export default createStore({
     DELETE_PRODUCT(state, productId) {
       state.products = state.products.filter((p) => p.id !== productId);
     },
-    ADJUST_STOCK(state, { productId, delta }) {
-      const product = state.products.find((p) => p.id === productId);
-      if (!product) return;
-
-      const nextQty = Math.max(0, Number(product.quantity || 0) + Number(delta));
-      product.quantity = nextQty;
-      product.remainingStock = nextQty;
-      product.availability = computeAvailability(nextQty, product.thresholdValue);
-      product.updatedAt = nowIso();
-    },
-    ADD_STOCK_EVENT(state, { productId, event }) {
-      const product = state.products.find((p) => p.id === productId);
-      if (!product) return;
-      if (!Array.isArray(product.stockHistory)) product.stockHistory = [];
-      product.stockHistory.unshift(event);
-    },
-    ADD_CATEGORY(state, name) {
-      const n = String(name || "").trim();
-      if (!n) return;
-      if (state.categories.includes(n)) return;
-      state.categories.push(n);
-    },
-    UPDATE_CATEGORY(state, { oldName, newName }) {
-      const n = String(newName || "").trim();
-      if (!n) return;
-      const idx = state.categories.indexOf(oldName);
-      if (idx !== -1) {
-        state.categories.splice(idx, 1, n);
-        state.products.forEach(p => {
-          if (p.category === oldName) p.category = n;
-        });
-      }
-    },
-    DELETE_CATEGORY(state, name) {
-      state.categories = state.categories.filter((c) => c !== name);
-      state.products.forEach((p) => {
-        if (p.category === name) p.category = "";
-      });
-    },
-    ADD_TAG(state, name) {
-      const n = String(name || "").trim();
-      if (!n) return;
-      if (state.tags.includes(n)) return;
-      state.tags.push(n);
-    },
-    UPDATE_TAG(state, { oldName, newName }) {
-      const n = String(newName || "").trim();
-      if (!n) return;
-      const idx = state.tags.indexOf(oldName);
-      if (idx !== -1) {
-        state.tags.splice(idx, 1, n);
-        state.products.forEach(p => {
-          if (Array.isArray(p.tags)) {
-            const tIdx = p.tags.indexOf(oldName);
-            if (tIdx !== -1) p.tags.splice(tIdx, 1, n);
-          }
-        });
-      }
-    },
-    DELETE_TAG(state, name) {
-      state.tags = state.tags.filter((t) => t !== name);
-      state.products.forEach((p) => {
-        p.tags = (p.tags || []).filter((t) => t !== name);
-      });
-    },
-    ADD_STORAGE_LOCATION(state, loc) {
-      const area = String(loc?.area || "").trim();
-      const sub = String(loc?.sub || "").trim();
-      if (!area) return;
-      const exists = state.storageLocations.some(
-        (l) => l.area === area && l.sub === sub
-      );
-      if (exists) return;
-      state.storageLocations.push({ area, sub });
-    },
-    UPDATE_STORAGE_LOCATION(state, { oldLoc, newLoc }) {
-      const idx = state.storageLocations.findIndex(
-        l => l.area === oldLoc.area && l.sub === oldLoc.sub
-      );
-      if (idx !== -1) {
-        state.storageLocations.splice(idx, 1, { ...newLoc });
-        state.products.forEach(p => {
-          if (p.storage?.area === oldLoc.area && p.storage?.sub === oldLoc.sub) {
-            p.storage = { ...newLoc };
-          }
-        });
-      }
-    },
-    DELETE_STORAGE_LOCATION(state, loc) {
-      state.storageLocations = state.storageLocations.filter(
-        (l) => !(l.area === loc.area && l.sub === loc.sub)
-      );
-    },
-    ADD_VENDOR(state, vendor) {
-      const name = String(vendor?.name || "").trim();
-      const contact = String(vendor?.contact || "").trim();
-      if (!name) return;
-      const exists = state.vendors.some((v) => v.name === name);
-      if (exists) return;
-      state.vendors.push({ name, contact });
-    },
-    UPDATE_VENDOR(state, { oldName, newVendor }) {
-      const idx = state.vendors.findIndex(v => v.name === oldName);
-      if (idx !== -1) {
-        state.vendors.splice(idx, 1, { ...newVendor });
-        state.products.forEach(p => {
-          if (p.vendor?.name === oldName) {
-            p.vendor = { ...newVendor };
-          }
-        });
-      }
-    },
-    DELETE_VENDOR(state, name) {
-      state.vendors = state.vendors.filter((v) => v.name !== name);
-    },
   },
   actions: {
-    login({ commit, state }, credentials) {
-      // Simulate login
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const user = state.users.find(u => u.email === credentials.email) || 
-                       { email: credentials.email, name: "ASA User", role: "Admin" };
-          commit("SET_USER", user);
-          localStorage.setItem("asa_token", "mock-token-123");
-          resolve(user);
-        }, 500);
-      });
+    async init({ dispatch }) {
+      const token = localStorage.getItem("asa_token");
+      const user = JSON.parse(localStorage.getItem("asa_user"));
+      if (token && user) {
+        this.commit("SET_USER", user);
+        await Promise.all([
+          dispatch("fetchProducts"),
+          dispatch("fetchUsers"),
+          dispatch("fetchSettings"),
+        ]);
+      }
+    },
+    async login({ commit, dispatch }, credentials) {
+      try {
+        const response = await api.post("/auth/login", credentials);
+        const user = response.data;
+        commit("SET_USER", user);
+        localStorage.setItem("asa_token", user.token);
+        localStorage.setItem("asa_user", JSON.stringify(user));
+        await Promise.all([
+          dispatch("fetchProducts"),
+          dispatch("fetchUsers"),
+          dispatch("fetchSettings"),
+        ]);
+        return user;
+      } catch (error) {
+        throw error;
+      }
     },
     logout({ commit }) {
       commit("SET_USER", null);
       localStorage.removeItem("asa_token");
+      localStorage.removeItem("asa_user");
     },
-    addUser({ commit }, user) {
-      commit("ADD_USER", user);
+    async fetchProducts({ commit }) {
+      try {
+        const response = await api.get("/products/");
+        commit("SET_PRODUCTS", response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
     },
-    updateUserRole({ commit }, payload) {
-      commit("UPDATE_USER_ROLE", payload);
+    async fetchUsers({ commit, getters }) {
+      if (!getters.isAdmin) return;
+      try {
+        const response = await api.get("/users/");
+        commit("SET_USERS", response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
     },
-    deleteUser({ commit }, userId) {
-      commit("DELETE_USER", userId);
+    async fetchSettings({ commit }) {
+      try {
+        const [cats, tags, locs, vendors] = await Promise.all([
+          api.get("/settings/categories"),
+          api.get("/settings/tags"),
+          api.get("/settings/storage-locations"),
+          api.get("/settings/vendors"),
+        ]);
+        commit("SET_CATEGORIES", cats.data);
+        commit("SET_TAGS", tags.data);
+        commit("SET_STORAGE_LOCATIONS", locs.data);
+        commit("SET_VENDORS", vendors.data);
+      } catch (error) {
+        console.error("Error fetching settings:", error);
+      }
     },
-    addProduct({ commit }, product) {
-      const quantity = Number(product.quantity || 0);
-      const thresholdValue = Number(product.thresholdValue || 0);
-      const id = `${Date.now()}_${Math.floor(Math.random() * 1e6)}`;
-
-      const newProduct = {
-        id,
-        name: String(product.name || "").trim(),
-        description: String(product.description || "").trim(),
-        buyingPrice: Number(product.buyingPrice || 0),
-        quantity,
-        unit: String(product.unit || "").trim(),
-        thresholdValue,
-        expiryDate: product.expiryDate || "",
-        category: product.category || "",
-        tags: Array.isArray(product.tags) ? product.tags : [],
-        image: product.image || null,
-        vendor: product.vendor || { name: "", contact: "" },
-        storage: product.storage || { area: "", sub: "" },
-        openingStock: quantity,
-        remainingStock: quantity,
-        onTheWay: 0,
-        stockLocations: [],
-        availability: computeAvailability(quantity, thresholdValue),
-        createdAt: nowIso(),
-        updatedAt: nowIso(),
-        stockHistory: [
-          {
-            id: `evt_${Date.now()}`,
-            at: nowIso(),
-            delta: quantity,
-            reason: "Initial stock",
-          },
-        ],
-      };
-      commit("ADD_PRODUCT", newProduct);
+    async addProduct({ commit }, product) {
+      try {
+        const response = await api.post("/products/", product);
+        commit("ADD_PRODUCT", response.data);
+      } catch (error) {
+        console.error("Error adding product:", error);
+      }
     },
-    updateProduct({ commit, state }, updates) {
-      const existing = state.products.find((p) => p.id === updates.id);
-      if (!existing) return;
-
-      const next = {
-        ...existing,
-        ...updates,
-      };
-
-      const quantity = Number(next.quantity || 0);
-      const thresholdValue = Number(next.thresholdValue || 0);
-      next.quantity = quantity;
-      next.remainingStock = quantity;
-      next.thresholdValue = thresholdValue;
-      next.availability = computeAvailability(quantity, thresholdValue);
-      next.description = String(next.description || "").trim();
-      next.tags = Array.isArray(next.tags) ? next.tags : [];
-      next.vendor = next.vendor || { name: "", contact: "" };
-      next.storage = next.storage || { area: "", sub: "" };
-      next.updatedAt = nowIso();
-      if (!Array.isArray(next.stockHistory)) next.stockHistory = existing.stockHistory || [];
-
-      commit("UPDATE_PRODUCT", next);
+    async updateProduct({ commit }, updates) {
+      try {
+        const response = await api.put(`/products/${updates.id}`, updates);
+        commit("UPDATE_PRODUCT", response.data);
+      } catch (error) {
+        console.error("Error updating product:", error);
+      }
     },
-    deleteProduct({ commit }, productId) {
-      commit("DELETE_PRODUCT", productId);
+    async deleteProduct({ commit }, productId) {
+      try {
+        await api.delete(`/products/${productId}`);
+        commit("DELETE_PRODUCT", productId);
+      } catch (error) {
+        console.error("Error deleting product:", error);
+      }
     },
-    adjustStock({ commit, state }, payload) {
-      commit("ADJUST_STOCK", payload);
-      const product = state.products.find((p) => p.id === payload.productId);
-      if (!product) return;
-      commit("ADD_STOCK_EVENT", {
-        productId: payload.productId,
-        event: {
-          id: `evt_${Date.now()}`,
-          at: nowIso(),
-          delta: Number(payload.delta || 0),
-          reason: String(payload.reason || "").trim(),
-        },
-      });
+    async adjustStock({ dispatch }, payload) {
+      try {
+        await api.post("/products/adjust-stock", payload);
+        await dispatch("fetchProducts");
+      } catch (error) {
+        console.error("Error adjusting stock:", error);
+      }
     },
-    addCategory({ commit }, name) {
-      commit("ADD_CATEGORY", name);
+    async addUser({ dispatch }, user) {
+      try {
+        await api.post("/users/", user);
+        await dispatch("fetchUsers");
+      } catch (error) {
+        console.error("Error adding user:", error);
+      }
     },
-    updateCategory({ commit }, payload) {
-      commit("UPDATE_CATEGORY", payload);
+    async updateUserRole({ dispatch }, { userId, role }) {
+      try {
+        await api.patch(`/users/${userId}/role`, null, { params: { role } });
+        await dispatch("fetchUsers");
+      } catch (error) {
+        console.error("Error updating user role:", error);
+      }
     },
-    deleteCategory({ commit }, name) {
-      commit("DELETE_CATEGORY", name);
+    async deleteUser({ dispatch }, userId) {
+      try {
+        await api.delete(`/users/${userId}`);
+        await dispatch("fetchUsers");
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
     },
-    addTag({ commit }, name) {
-      commit("ADD_TAG", name);
+    async addCategory({ dispatch }, name) {
+      try {
+        await api.post("/settings/categories", { name });
+        await dispatch("fetchSettings");
+      } catch (error) {
+        console.error("Error adding category:", error);
+      }
     },
-    updateTag({ commit }, payload) {
-      commit("UPDATE_TAG", payload);
+    async deleteCategory({ dispatch }, name) {
+      try {
+        await api.delete(`/settings/categories/${name}`);
+        await dispatch("fetchSettings");
+      } catch (error) {
+        console.error("Error deleting category:", error);
+      }
     },
-    deleteTag({ commit }, name) {
-      commit("DELETE_TAG", name);
+    async addTag({ dispatch }, name) {
+      try {
+        await api.post("/settings/tags", { name });
+        await dispatch("fetchSettings");
+      } catch (error) {
+        console.error("Error adding tag:", error);
+      }
     },
-    addStorageLocation({ commit }, loc) {
-      commit("ADD_STORAGE_LOCATION", loc);
+    async addStorageLocation({ dispatch }, loc) {
+      try {
+        await api.post("/settings/storage-locations", loc);
+        await dispatch("fetchSettings");
+      } catch (error) {
+        console.error("Error adding storage location:", error);
+      }
     },
-    updateStorageLocation({ commit }, payload) {
-      commit("UPDATE_STORAGE_LOCATION", payload);
+    async addVendor({ dispatch }, vendor) {
+      try {
+        await api.post("/settings/vendors", vendor);
+        await dispatch("fetchSettings");
+      } catch (error) {
+        console.error("Error adding vendor:", error);
+      }
     },
-    deleteStorageLocation({ commit }, loc) {
-      commit("DELETE_STORAGE_LOCATION", loc);
+    async updateCategory({ dispatch }, { oldName, newName }) {
+      try {
+        await api.patch(`/settings/categories/${oldName}`, { name: newName });
+        await dispatch("fetchSettings");
+        await dispatch("fetchProducts");
+      } catch (error) {
+        console.error("Error updating category:", error);
+      }
     },
-    addVendor({ commit }, vendor) {
-      commit("ADD_VENDOR", vendor);
+    async updateTag({ dispatch }, { oldName, newName }) {
+      try {
+        await api.patch(`/settings/tags/${oldName}`, { name: newName });
+        await dispatch("fetchSettings");
+        await dispatch("fetchProducts");
+      } catch (error) {
+        console.error("Error updating tag:", error);
+      }
     },
-    updateVendor({ commit }, payload) {
-      commit("UPDATE_VENDOR", payload);
+    async updateStorageLocation({ dispatch }, { oldLoc, newLoc }) {
+      try {
+        await api.patch("/settings/storage-locations", { oldLoc, newLoc });
+        await dispatch("fetchSettings");
+        await dispatch("fetchProducts");
+      } catch (error) {
+        console.error("Error updating storage location:", error);
+      }
     },
-    deleteVendor({ commit }, name) {
-      commit("DELETE_VENDOR", name);
+    async updateVendor({ dispatch }, { oldName, newVendor }) {
+      try {
+        await api.patch(`/settings/vendors/${oldName}`, newVendor);
+        await dispatch("fetchSettings");
+        await dispatch("fetchProducts");
+      } catch (error) {
+        console.error("Error updating vendor:", error);
+      }
     },
   },
 });

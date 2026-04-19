@@ -7,4 +7,8 @@ import "./assets/styles/global.css";
 const app = createApp(App);
 app.use(router);
 app.use(store);
+
+// Initialize store with data from API if logged in
+store.dispatch("init");
+
 app.mount("#app");

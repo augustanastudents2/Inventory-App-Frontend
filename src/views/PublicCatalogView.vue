@@ -90,6 +90,9 @@ export default {
       })
     },
   },
+  created() {
+    this.$store.dispatch("fetchProducts");
+  },
   methods: {
     badgeClass(status) {
       if (status === "In-stock") return "good"
