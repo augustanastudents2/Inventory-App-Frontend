@@ -38,7 +38,7 @@
         </form>
 
         <div class="login-footer">
-          <router-link to="/public" class="public-link">
+          <router-link to="/" class="public-link">
             View Public Catalog
           </router-link>
         </div>

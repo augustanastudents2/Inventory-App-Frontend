@@ -45,9 +45,9 @@
 
     <div class="sidebar-bottom">
       <router-link
-        to="/public"
+        to="/"
         class="nav-item public-link"
-        :class="{ active: $route.path === '/public' }"
+        :class="{ active: $route.path === '/' }"
       >
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10" />

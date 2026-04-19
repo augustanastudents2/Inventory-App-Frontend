@@ -9,19 +9,15 @@ import PublicCatalogView from "../views/PublicCatalogView.vue";
 const routes = [
   {
     path: "/",
-    redirect: "/login",
+    name: "PublicCatalog",
+    component: PublicCatalogView,
+    meta: { requiresAuth: false, title: "ASA Inventory" },
   },
   {
     path: "/login",
     name: "Login",
     component: LoginView,
     meta: { requiresAuth: false, title: "Login" },
-  },
-  {
-    path: "/public",
-    name: "PublicCatalog",
-    component: PublicCatalogView,
-    meta: { requiresAuth: false, title: "ASA Inventory" },
   },
   {
     path: "/dashboard",
