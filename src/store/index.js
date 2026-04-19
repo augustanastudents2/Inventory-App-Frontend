@@ -13,7 +13,11 @@ function nowIso() {
 
 export default createStore({
   state: {
-    user: null,
+    user: { id: 1, name: "ASA Admin", email: "admin@asa.com", role: "Admin" },
+    users: [
+      { id: 1, name: "ASA Admin", email: "admin@asa.com", role: "Admin" },
+      { id: 2, name: "Staff User", email: "staff@asa.com", role: "Staff" },
+    ],
     categories: [
       "Casino Night Event",
       "Art Supplies",
@@ -271,6 +275,7 @@ export default createStore({
     },
   },
   getters: {
+    isAdmin: (state) => state.user?.role === "Admin",
     getProductById: (state) => (id) => {
       return state.products.find((p) => p.id === id);
     },
@@ -285,6 +290,16 @@ export default createStore({
   mutations: {
     SET_USER(state, user) {
       state.user = user;
+    },
+    ADD_USER(state, user) {
+      state.users.push({ ...user, id: Date.now() });
+    },
+    UPDATE_USER_ROLE(state, { userId, role }) {
+      const user = state.users.find((u) => u.id === userId);
+      if (user) user.role = role;
+    },
+    DELETE_USER(state, userId) {
+      state.users = state.users.filter((u) => u.id !== userId);
     },
     ADD_PRODUCT(state, product) {
       state.products.push(product);
@@ -320,6 +335,17 @@ export default createStore({
       if (state.categories.includes(n)) return;
       state.categories.push(n);
     },
+    UPDATE_CATEGORY(state, { oldName, newName }) {
+      const n = String(newName || "").trim();
+      if (!n) return;
+      const idx = state.categories.indexOf(oldName);
+      if (idx !== -1) {
+        state.categories.splice(idx, 1, n);
+        state.products.forEach(p => {
+          if (p.category === oldName) p.category = n;
+        });
+      }
+    },
     DELETE_CATEGORY(state, name) {
       state.categories = state.categories.filter((c) => c !== name);
       state.products.forEach((p) => {
@@ -331,6 +357,20 @@ export default createStore({
       if (!n) return;
       if (state.tags.includes(n)) return;
       state.tags.push(n);
+    },
+    UPDATE_TAG(state, { oldName, newName }) {
+      const n = String(newName || "").trim();
+      if (!n) return;
+      const idx = state.tags.indexOf(oldName);
+      if (idx !== -1) {
+        state.tags.splice(idx, 1, n);
+        state.products.forEach(p => {
+          if (Array.isArray(p.tags)) {
+            const tIdx = p.tags.indexOf(oldName);
+            if (tIdx !== -1) p.tags.splice(tIdx, 1, n);
+          }
+        });
+      }
     },
     DELETE_TAG(state, name) {
       state.tags = state.tags.filter((t) => t !== name);
@@ -348,6 +388,19 @@ export default createStore({
       if (exists) return;
       state.storageLocations.push({ area, sub });
     },
+    UPDATE_STORAGE_LOCATION(state, { oldLoc, newLoc }) {
+      const idx = state.storageLocations.findIndex(
+        l => l.area === oldLoc.area && l.sub === oldLoc.sub
+      );
+      if (idx !== -1) {
+        state.storageLocations.splice(idx, 1, { ...newLoc });
+        state.products.forEach(p => {
+          if (p.storage?.area === oldLoc.area && p.storage?.sub === oldLoc.sub) {
+            p.storage = { ...newLoc };
+          }
+        });
+      }
+    },
     DELETE_STORAGE_LOCATION(state, loc) {
       state.storageLocations = state.storageLocations.filter(
         (l) => !(l.area === loc.area && l.sub === loc.sub)
@@ -361,16 +414,28 @@ export default createStore({
       if (exists) return;
       state.vendors.push({ name, contact });
     },
+    UPDATE_VENDOR(state, { oldName, newVendor }) {
+      const idx = state.vendors.findIndex(v => v.name === oldName);
+      if (idx !== -1) {
+        state.vendors.splice(idx, 1, { ...newVendor });
+        state.products.forEach(p => {
+          if (p.vendor?.name === oldName) {
+            p.vendor = { ...newVendor };
+          }
+        });
+      }
+    },
     DELETE_VENDOR(state, name) {
       state.vendors = state.vendors.filter((v) => v.name !== name);
     },
   },
   actions: {
-    login({ commit }, credentials) {
+    login({ commit, state }, credentials) {
       // Simulate login
       return new Promise((resolve) => {
         setTimeout(() => {
-          const user = { email: credentials.email, name: "ASA User" };
+          const user = state.users.find(u => u.email === credentials.email) || 
+                       { email: credentials.email, name: "ASA User", role: "Admin" };
           commit("SET_USER", user);
           localStorage.setItem("asa_token", "mock-token-123");
           resolve(user);
@@ -380,6 +445,15 @@ export default createStore({
     logout({ commit }) {
       commit("SET_USER", null);
       localStorage.removeItem("asa_token");
+    },
+    addUser({ commit }, user) {
+      commit("ADD_USER", user);
+    },
+    updateUserRole({ commit }, payload) {
+      commit("UPDATE_USER_ROLE", payload);
+    },
+    deleteUser({ commit }, userId) {
+      commit("DELETE_USER", userId);
     },
     addProduct({ commit }, product) {
       const quantity = Number(product.quantity || 0);
@@ -462,11 +536,17 @@ export default createStore({
     addCategory({ commit }, name) {
       commit("ADD_CATEGORY", name);
     },
+    updateCategory({ commit }, payload) {
+      commit("UPDATE_CATEGORY", payload);
+    },
     deleteCategory({ commit }, name) {
       commit("DELETE_CATEGORY", name);
     },
     addTag({ commit }, name) {
       commit("ADD_TAG", name);
+    },
+    updateTag({ commit }, payload) {
+      commit("UPDATE_TAG", payload);
     },
     deleteTag({ commit }, name) {
       commit("DELETE_TAG", name);
@@ -474,11 +554,17 @@ export default createStore({
     addStorageLocation({ commit }, loc) {
       commit("ADD_STORAGE_LOCATION", loc);
     },
+    updateStorageLocation({ commit }, payload) {
+      commit("UPDATE_STORAGE_LOCATION", payload);
+    },
     deleteStorageLocation({ commit }, loc) {
       commit("DELETE_STORAGE_LOCATION", loc);
     },
     addVendor({ commit }, vendor) {
       commit("ADD_VENDOR", vendor);
+    },
+    updateVendor({ commit }, payload) {
+      commit("UPDATE_VENDOR", payload);
     },
     deleteVendor({ commit }, name) {
       commit("DELETE_VENDOR", name);

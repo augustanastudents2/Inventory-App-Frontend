@@ -4,7 +4,7 @@
     @search="handleSearch"
   >
     <div class="dashboard">
-      <div class="card">
+      <div class="card main-overview">
         <div class="header-row">
           <div>
             <h2 class="section-title">Stock Dashboard</h2>
@@ -19,7 +19,7 @@
         </div>
 
         <div class="chart-wrap">
-          <div class="chart-card">
+          <div class="chart-container">
             <div class="chart-title">Stock status</div>
             <StockStatusChart
               :inStock="inStockCount"
@@ -30,22 +30,22 @@
           <div class="summary">
             <div class="summary-row">
               <span class="dot dot-green"></span>
-              <span>In stock</span>
+              <span class="label">In stock</span>
               <span class="summary-value">{{ inStockCount }}</span>
             </div>
             <div class="summary-row">
               <span class="dot dot-amber"></span>
-              <span>Low stock</span>
+              <span class="label">Low stock</span>
               <span class="summary-value">{{ lowStockCount }}</span>
             </div>
             <div class="summary-row">
               <span class="dot dot-red"></span>
-              <span>Out of stock</span>
+              <span class="label">Out of stock</span>
               <span class="summary-value">{{ outOfStockCount }}</span>
             </div>
-            <div class="summary-row muted">
+            <div class="summary-row total-row">
               <span></span>
-              <span>Total</span>
+              <span class="label">Total</span>
               <span class="summary-value">{{ totalProducts }}</span>
             </div>
           </div>
@@ -53,7 +53,7 @@
       </div>
 
       <div class="grid">
-        <div class="card">
+        <div class="card list-card">
           <div class="list-header">
             <h3 class="list-title">Out of stock</h3>
             <span class="pill pill-red">{{ outOfStockProducts.length }}</span>
@@ -70,7 +70,7 @@
           <div v-else class="empty">No out-of-stock materials.</div>
         </div>
 
-        <div class="card">
+        <div class="card list-card">
           <div class="list-header">
             <h3 class="list-title">Low stock</h3>
             <span class="pill pill-amber">{{ lowStockProducts.length }}</span>
@@ -91,17 +91,19 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card chart-card-full">
         <div class="list-header">
           <h3 class="list-title">Category breakdown</h3>
           <span class="pill pill-neutral">{{ categoryBreakdown.length }}</span>
         </div>
-        <CategoryBreakdownChart
-          v-if="categoryBreakdown.length"
-          :labels="categoryChartLabels"
-          :counts="categoryChartCounts"
-        />
-        <div v-else class="empty">No categories found.</div>
+        <div class="full-chart-wrap">
+          <CategoryBreakdownChart
+            v-if="categoryBreakdown.length"
+            :labels="categoryChartLabels"
+            :counts="categoryChartCounts"
+          />
+          <div v-else class="empty">No categories found.</div>
+        </div>
       </div>
     </div>
   </AppLayout>
@@ -222,10 +224,16 @@ export default {
 }
 
 .card {
-  background: #fff;
-  border-radius: 12px;
+  background: var(--apple-card-bg);
+  border-radius: var(--apple-radius-lg);
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--apple-shadow);
+  border: 1px solid var(--apple-border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: var(--apple-shadow-hover);
 }
 
 .header-row {
@@ -233,108 +241,106 @@ export default {
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
-  margin-bottom: 14px;
+  margin-bottom: 24px;
 }
 
 .section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--apple-text-primary);
   margin-bottom: 4px;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
-  color: #6b7280;
-  font-size: 13px;
+  color: var(--apple-text-secondary);
+  font-size: 15px;
 }
 
 .kpi {
-  min-width: 160px;
-  padding: 12px 14px;
-  border: 1px solid #f3f4f6;
-  border-radius: 12px;
-  background: #fafafa;
+  padding: 12px 20px;
+  border-radius: var(--apple-radius-md);
+  background: var(--apple-gray);
   text-align: right;
 }
 
 .kpi-label {
-  color: #6b7280;
+  color: var(--apple-text-secondary);
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
 }
 
 .kpi-value {
   margin-top: 4px;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 800;
-  color: #111827;
+  color: var(--apple-text-primary);
 }
 
 .chart-wrap {
   display: grid;
-  grid-template-columns: 1fr 260px;
-  gap: 18px;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
   align-items: center;
-  margin-top: 10px;
 }
 
-.chart-card {
-  border: 1px solid #f3f4f6;
-  border-radius: 12px;
-  padding: 14px;
+.chart-container {
+  padding: 20px;
+  background: var(--apple-gray);
+  border-radius: var(--apple-radius-md);
 }
 
 .chart-title {
-  font-size: 14px;
-  font-weight: 800;
-  color: #111827;
-  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--apple-text-primary);
+  margin-bottom: 16px;
 }
 
 .summary {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 14px;
-  border: 1px solid #f3f4f6;
-  border-radius: 12px;
-  background: #fafafa;
+  gap: 12px;
+  padding: 20px;
+  background: var(--apple-gray);
+  border-radius: var(--apple-radius-md);
 }
 
 .summary-row {
   display: grid;
-  grid-template-columns: 14px 1fr auto;
-  gap: 10px;
+  grid-template-columns: 12px 1fr auto;
+  gap: 12px;
   align-items: center;
-  font-size: 14px;
-  font-weight: 700;
-  color: #111827;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--apple-text-primary);
+}
+
+.label {
+  color: var(--apple-text-secondary);
 }
 
 .summary-value {
-  font-weight: 900;
+  font-weight: 700;
+}
+
+.total-row {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--apple-border);
 }
 
 .dot {
   width: 10px;
   height: 10px;
-  border-radius: 999px;
-  display: inline-block;
+  border-radius: 50%;
 }
 
-.dot-green {
-  background: #16a34a;
-}
-
-.dot-amber {
-  background: #d97706;
-}
-
-.dot-red {
-  background: #dc2626;
-}
+.dot-green { background: var(--apple-green); }
+.dot-amber { background: var(--apple-orange); }
+.dot-red { background: var(--apple-red); }
 
 .grid {
   display: grid;
@@ -346,87 +352,93 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 .list-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  color: #111827;
+  color: var(--apple-text-primary);
 }
 
 .pill {
-  font-size: 12px;
-  font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
 }
 
 .pill-red {
-  color: #dc2626;
-  border-color: #fecaca;
-  background: #fef2f2;
+  color: var(--apple-red);
+  background: rgba(255, 59, 48, 0.1);
 }
 
 .pill-amber {
-  color: #b45309;
-  border-color: #fde68a;
-  background: #fffbeb;
+  color: var(--apple-orange);
+  background: rgba(255, 149, 0, 0.1);
 }
 
 .pill-neutral {
-  color: #374151;
-  border-color: #e5e7eb;
-  background: #f9fafb;
+  color: var(--apple-text-secondary);
+  background: var(--apple-gray);
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .list-row {
-  padding: 12px 12px;
-  border: 1px solid #f3f4f6;
-  border-radius: 12px;
+  padding: 16px;
+  background: var(--apple-gray);
+  border-radius: var(--apple-radius-md);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  transition: transform 0.2s ease;
+}
+
+.list-row:hover {
+  transform: scale(1.02);
 }
 
 .name {
   font-weight: 700;
-  color: #111827;
-  font-size: 14px;
+  color: var(--apple-text-primary);
+  font-size: 16px;
 }
 
 .meta {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .qty {
   font-weight: 700;
-  color: #111827;
+  color: var(--apple-text-primary);
 }
 
 .muted {
-  color: #6b7280;
+  color: var(--apple-text-secondary);
 }
 
 .empty {
-  padding: 16px 12px;
-  color: #6b7280;
-  font-size: 13px;
-  border: 1px dashed #e5e7eb;
-  border-radius: 12px;
+  padding: 32px;
+  color: var(--apple-text-secondary);
+  font-size: 15px;
+  text-align: center;
+  border: 2px dashed var(--apple-border);
+  border-radius: var(--apple-radius-md);
 }
 
-@media (max-width: 900px) {
+.full-chart-wrap {
+  margin-top: 10px;
+}
+
+@media (max-width: 1000px) {
   .chart-wrap {
     grid-template-columns: 1fr;
   }

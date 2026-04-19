@@ -104,9 +104,8 @@ export default {
 <style scoped>
 .public-page {
   min-height: 100vh;
-  background: #f5f5f7;
+  background: var(--apple-bg);
   padding: 40px 24px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 .public-header {
@@ -122,13 +121,13 @@ export default {
   font-size: 34px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #1d1d1f;
+  color: var(--apple-text-primary);
   margin: 0;
 }
 
 .subtitle {
   margin-top: 8px;
-  color: #86868b;
+  color: var(--apple-text-secondary);
   font-size: 17px;
   font-weight: 400;
 }
@@ -151,7 +150,7 @@ export default {
   transform: translateY(-50%);
   width: 18px;
   height: 18px;
-  color: #86868b;
+  color: var(--apple-text-secondary);
   pointer-events: none;
 }
 
@@ -162,7 +161,7 @@ export default {
   border-radius: 12px;
   font-size: 16px;
   background: rgba(0, 0, 0, 0.05);
-  color: #1d1d1f;
+  color: var(--apple-text-primary);
   transition: background 0.2s ease;
 }
 
@@ -174,7 +173,7 @@ export default {
 .btn {
   padding: 10px 20px;
   border-radius: 20px;
-  background: #0071e3;
+  background: var(--apple-blue);
   color: #fff;
   font-size: 14px;
   font-weight: 600;
@@ -192,7 +191,7 @@ export default {
 }
 
 .muted {
-  color: #86868b;
+  color: var(--apple-text-secondary);
   font-size: 14px;
 }
 
@@ -205,19 +204,19 @@ export default {
 }
 
 .item-card {
-  background: #fff;
-  border-radius: 20px;
+  background: var(--apple-card-bg);
+  border-radius: var(--apple-radius-lg);
   padding: 24px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--apple-shadow);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--apple-border);
 }
 
 .item-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--apple-shadow-hover);
 }
 
 .card-top {
@@ -230,7 +229,7 @@ export default {
 .category-pill {
   font-size: 12px;
   font-weight: 600;
-  color: #86868b;
+  color: var(--apple-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -249,14 +248,14 @@ export default {
 .item-name {
   font-size: 20px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--apple-text-primary);
   margin: 0 0 8px;
   line-height: 1.2;
 }
 
 .item-description {
   font-size: 14px;
-  color: #48484a;
+  color: var(--apple-text-secondary);
   line-height: 1.5;
   margin: 0 0 16px;
   display: -webkit-box;
@@ -273,13 +272,13 @@ export default {
 
 .tag {
   font-size: 12px;
-  color: #0071e3;
+  color: var(--apple-blue);
   font-weight: 500;
 }
 
 .card-footer {
   padding-top: 16px;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: 1px solid var(--apple-border);
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -293,7 +292,7 @@ export default {
 
 .qty-label {
   font-size: 11px;
-  color: #86868b;
+  color: var(--apple-text-secondary);
   text-transform: uppercase;
   font-weight: 600;
 }
@@ -301,7 +300,7 @@ export default {
 .qty-value {
   font-size: 16px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--apple-text-primary);
 }
 
 .availability-text {
@@ -309,9 +308,9 @@ export default {
   font-weight: 600;
 }
 
-.good { color: #34c759; background-color: #34c759; }
-.warn { color: #ff9500; background-color: #ff9500; }
-.bad { color: #ff3b30; background-color: #ff3b30; }
+.good { color: var(--apple-green); background-color: var(--apple-green); }
+.warn { color: var(--apple-orange); background-color: var(--apple-orange); }
+.bad { color: var(--apple-red); background-color: var(--apple-red); }
 
 .availability-text.good { background: none; }
 .availability-text.warn { background: none; }
@@ -320,7 +319,7 @@ export default {
 .empty-state {
   text-align: center;
   padding: 80px 24px;
-  color: #86868b;
+  color: var(--apple-text-secondary);
   font-size: 17px;
 }
 

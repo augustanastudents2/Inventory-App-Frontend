@@ -1,36 +1,29 @@
 <template>
   <div class="login-page">
-    <div class="login-left">
-      <img
-        src="/assets/asa-logo-large.png"
-        alt="ASA"
-        class="login-logo-large"
-      />
-    </div>
-
-    <div class="login-right">
-      <div class="login-form-container">
-        <div class="login-logo-small">
-          <img src="/assets/asa-logo.png" alt="ASA" />
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-header">
+          <img src="/assets/asa-logo.png" alt="ASA Logo" class="logo" />
+          <h1 class="title">Sign In</h1>
+          <p class="subtitle">Access the ASA Inventory Management System</p>
         </div>
-
-        <h1 class="login-title">Log in to your account</h1>
-        <p class="login-subtitle">Welcome back! Please enter your details.</p>
 
         <form @submit.prevent="handleLogin" class="login-form">
           <div class="form-group">
-            <label>Email</label>
+            <label for="email">Email</label>
             <input
+              id="email"
               type="email"
               v-model="email"
-              placeholder="Enter your email"
+              placeholder="name@example.com"
               required
             />
           </div>
 
           <div class="form-group">
-            <label>Password</label>
+            <label for="password">Password</label>
             <input
+              id="password"
               type="password"
               v-model="password"
               placeholder="••••••••"
@@ -39,17 +32,25 @@
           </div>
 
           <div class="form-options">
-            <label class="checkbox-label">
+            <label class="checkbox-container">
               <input type="checkbox" v-model="rememberMe" />
-              <span>Remember for 30 days</span>
+              <span class="checkmark"></span>
+              Remember me
             </label>
-            <a href="#" class="forgot-link">Forgot password</a>
+            <a href="#" class="forgot-link">Forgot password?</a>
           </div>
 
-          <button type="submit" class="btn-signin" :disabled="loading">
-            {{ loading ? "Signing in..." : "Sign in" }}
+          <button type="submit" class="btn-primary" :disabled="loading">
+            <span v-if="loading">Signing in...</span>
+            <span v-else>Sign In</span>
           </button>
         </form>
+
+        <div class="login-footer">
+          <router-link to="/public" class="public-link">
+            View Public Catalog
+          </router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -76,7 +77,7 @@ export default {
         })
         this.$router.push("/dashboard")
       } catch (error) {
-        alert("Login failed")
+        alert("Login failed. Please check your credentials.")
       } finally {
         this.loading = false
       }
@@ -87,135 +88,140 @@ export default {
 
 <style scoped>
 .login-page {
-  display: flex;
   min-height: 100vh;
-}
-
-.login-left {
-  flex: 1;
+  background-color: var(--apple-bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  padding: 24px;
 }
 
-.login-logo-large {
-  max-width: 450px;
-  width: 80%;
-}
-
-.login-right {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-}
-
-.login-form-container {
+.login-container {
   width: 100%;
-  max-width: 400px;
-  padding: 40px;
+  max-width: 440px;
 }
 
-.login-logo-small {
+.login-card {
+  background: var(--apple-card-bg);
+  border-radius: var(--apple-radius-lg);
+  padding: 48px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--apple-border);
+}
+
+.login-header {
   text-align: center;
+  margin-bottom: 40px;
+}
+
+.logo {
+  width: 120px;
+  height: auto;
   margin-bottom: 24px;
 }
 
-.login-logo-small img {
-  width: 80px;
-}
-
-.login-title {
-  font-size: 24px;
+.title {
+  font-size: 28px;
   font-weight: 700;
-  text-align: center;
+  color: var(--apple-text-primary);
+  letter-spacing: -0.02em;
   margin-bottom: 8px;
-  color: #1f2937;
 }
 
-.login-subtitle {
-  font-size: 14px;
-  text-align: center;
-  color: #6b7280;
-  margin-bottom: 32px;
+.subtitle {
+  font-size: 15px;
+  color: var(--apple-text-secondary);
+  line-height: 1.4;
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .form-group label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #344054;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--apple-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-left: 4px;
 }
 
 .form-group input {
-  padding: 10px 14px;
-  border: 1px solid #d0d5dd;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.2s;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: none;
+  background: var(--apple-gray);
+  font-size: 16px;
+  color: var(--apple-text-primary);
 }
 
 .form-group input:focus {
-  border-color: #1a73e8;
-  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+  background: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
 }
 
 .form-options {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 14px;
 }
 
-.checkbox-label {
+.checkbox-container {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  color: #344054;
+  color: var(--apple-text-secondary);
   cursor: pointer;
-}
-
-.checkbox-label input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
+  user-select: none;
 }
 
 .forgot-link {
-  font-size: 14px;
-  color: #1a73e8;
+  color: var(--apple-blue);
   font-weight: 600;
 }
 
-.btn-signin {
-  padding: 12px;
-  background: #1a73e8;
+.btn-primary {
+  padding: 14px;
+  background: var(--apple-blue);
   color: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
-  transition: background 0.2s;
+  margin-top: 8px;
 }
 
-.btn-signin:hover:not(:disabled) {
-  background: #1557b0;
+.btn-primary:hover:not(:disabled) {
+  background: #0077ed;
+  transform: translateY(-1px);
 }
 
-.btn-signin:disabled {
-  opacity: 0.7;
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
+.login-footer {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.public-link {
+  font-size: 14px;
+  color: var(--apple-text-secondary);
+  font-weight: 500;
+}
+
+.public-link:hover {
+  color: var(--apple-blue);
+}
 </style>

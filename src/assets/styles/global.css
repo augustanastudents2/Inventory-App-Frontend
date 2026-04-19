@@ -1,4 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+:root {
+  --apple-bg: #f5f5f7;
+  --apple-card-bg: #ffffff;
+  --apple-text-primary: #1d1d1f;
+  --apple-text-secondary: #86868b;
+  --apple-blue: #0071e3;
+  --apple-green: #34c759;
+  --apple-red: #ff3b30;
+  --apple-orange: #ff9500;
+  --apple-gray: #f2f2f7;
+  --apple-border: rgba(0, 0, 0, 0.1);
+  --apple-radius-lg: 20px;
+  --apple-radius-md: 12px;
+  --apple-radius-sm: 8px;
+  --apple-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  --apple-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+}
 
 * {
   margin: 0;
@@ -7,38 +24,48 @@
 }
 
 body {
-  font-family: "Inter", sans-serif;
-  background-color: #f0f1f3;
-  color: #333;
+  font-family: var(--apple-font);
+  background-color: var(--apple-bg);
+  color: var(--apple-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
   text-decoration: none;
   color: inherit;
+  transition: color 0.2s ease;
 }
 
 button {
   cursor: pointer;
   border: none;
   outline: none;
-  font-family: "Inter", sans-serif;
+  font-family: inherit;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 input,
-select {
-  font-family: "Inter", sans-serif;
+select,
+textarea {
+  font-family: inherit;
   outline: none;
+  transition: all 0.2s ease;
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
 }

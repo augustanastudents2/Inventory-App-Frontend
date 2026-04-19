@@ -1,5 +1,5 @@
 <template>
-  <ModalWrapper :visible="visible" maxWidth="560px" @close="$emit('close')">
+  <ModalWrapper :visible="visible" maxWidth="640px" @close="$emit('close')">
     <div class="product-form-modal">
       <h2 class="modal-title">{{ title }}</h2>
 
@@ -212,7 +212,7 @@
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn-outline" @click="$emit('close')">
+          <button type="button" class="btn-secondary" @click="$emit('close')">
             Cancel
           </button>
           <button type="submit" class="btn-primary">
@@ -341,20 +341,21 @@ export default {
 
 <style scoped>
 .product-form-modal {
-  padding: 28px 28px 24px;
+  padding: 40px;
 }
 
 .modal-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--apple-text-primary);
+  margin-bottom: 32px;
+  letter-spacing: -0.02em;
 }
 
 .product-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 24px;
 }
 
 .form-row {
@@ -366,7 +367,7 @@ export default {
 .two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 20px;
 }
 
 .col {
@@ -378,27 +379,35 @@ export default {
 .form-label {
   font-size: 13px;
   font-weight: 600;
-  color: #344054;
+  color: var(--apple-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-left: 4px;
 }
 
 .label-with-info {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
 }
 
 .form-input {
-  padding: 10px 14px;
-  border: 1px solid #d0d5dd;
-  border-radius: 10px;
-  font-size: 14px;
-  color: #1f2937;
-  background: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  background: var(--apple-gray);
+  font-size: 15px;
+  color: var(--apple-text-primary);
+  transition: background 0.2s ease;
+}
+
+.form-input:focus {
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .textarea {
   resize: vertical;
-  min-height: 92px;
+  min-height: 100px;
 }
 
 .tag-suggestions {
@@ -406,69 +415,62 @@ export default {
   gap: 8px;
   flex-wrap: wrap;
   align-items: center;
+  margin-top: 4px;
 }
 
 .muted-small {
-  color: #6b7280;
-  font-size: 12px;
+  color: var(--apple-text-secondary);
+  font-size: 11px;
   font-weight: 700;
+  text-transform: uppercase;
 }
 
 .tag-chip {
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  color: #374151;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--apple-text-primary);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .tag-chip:hover {
-  background: #f9fafb;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #1a73e8;
-  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.12);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  padding-top: 16px;
-  margin-top: 6px;
-  border-top: 1px solid #e5e7eb;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--apple-border);
 }
 
 .btn-primary {
-  padding: 10px 18px;
-  background: #1a73e8;
+  padding: 12px 24px;
+  background: var(--apple-blue);
   color: #fff;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 20px;
+  font-size: 15px;
   font-weight: 600;
-  border: none;
 }
 
 .btn-primary:hover {
-  background: #1557b0;
+  background: #0077ed;
 }
 
-.btn-outline {
-  padding: 10px 18px;
-  background: #fff;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  font-size: 14px;
+.btn-secondary {
+  padding: 12px 24px;
+  background: var(--apple-gray);
+  color: var(--apple-text-primary);
+  border-radius: 20px;
+  font-size: 15px;
   font-weight: 600;
 }
 
-.btn-outline:hover {
-  background: #f9fafb;
+.btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.08);
 }
 
 @media (max-width: 640px) {

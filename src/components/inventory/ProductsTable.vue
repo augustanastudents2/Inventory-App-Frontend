@@ -4,57 +4,65 @@
       <h2 class="section-title">Items</h2>
       <div class="table-actions">
         <button class="btn-primary" @click="$emit('add-product')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
           Add Item
         </button>
       </div>
     </div>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th class="sortable" @click.stop="$emit('sort-change', { key: 'category' })">
-            Category <span class="sort-indicator">{{ sortIndicator('category') }}</span>
-          </th>
-          <th>Storage</th>
-          <th>Vendor</th>
-          <th>Qty</th>
-          <th>Status</th>
-          <th>Updated</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="product in paginatedProducts"
-          :key="product.id"
-          @click="$emit('view-product', product)"
-          class="clickable-row"
-        >
-          <td>{{ product.name }}</td>
-          <td>{{ product.category || "—" }}</td>
-          <td>{{ storageText(product) }}</td>
-          <td>{{ product.vendor?.name || "—" }}</td>
-          <td>{{ product.quantity }} {{ product.unit }}</td>
-          <td>
-            <span
-              :class="[
-                'availability-badge',
-                availabilityClass(product.availability),
-              ]"
-            >
-              {{ product.availability }}
-            </span>
-          </td>
-          <td>{{ formatDate(product.updatedAt) }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th class="sortable" @click.stop="$emit('sort-change', { key: 'category' })">
+              Category <span class="sort-indicator">{{ sortIndicator('category') }}</span>
+            </th>
+            <th>Storage</th>
+            <th>Vendor</th>
+            <th>Qty</th>
+            <th>Status</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="product in paginatedProducts"
+            :key="product.id"
+            @click="$emit('view-product', product)"
+            class="clickable-row"
+          >
+            <td class="name-cell">{{ product.name }}</td>
+            <td>{{ product.category || "—" }}</td>
+            <td>{{ storageText(product) }}</td>
+            <td>{{ product.vendor?.name || "—" }}</td>
+            <td class="qty-cell">{{ product.quantity }} {{ product.unit }}</td>
+            <td>
+              <span
+                :class="[
+                  'availability-badge',
+                  availabilityClass(product.availability),
+                ]"
+              >
+                {{ product.availability }}
+              </span>
+            </td>
+            <td class="date-cell">{{ formatDate(product.updatedAt) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-    <Pagination
-      :currentPage="currentPage"
-      :totalPages="totalPages"
-      @page-change="$emit('page-change', $event)"
-    />
+    <div class="table-footer">
+      <Pagination
+        :currentPage="currentPage"
+        :totalPages="totalPages"
+        @page-change="$emit('page-change', $event)"
+      />
+    </div>
   </div>
 </template>
 
@@ -80,13 +88,13 @@ export default {
   methods: {
     sortIndicator(key) {
       if (this.sortKey !== key) return ""
-      return this.sortDir === "desc" ? "↓" : "↑"
+      return this.sortDir === "desc" ? " ↓" : " ↑"
     },
     formatDate(iso) {
       if (!iso) return "—"
       const d = new Date(iso)
       if (Number.isNaN(d.getTime())) return String(iso)
-      return d.toLocaleDateString()
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
     },
     storageText(p) {
       const a = p?.storage?.area || ""
@@ -112,60 +120,46 @@ export default {
 
 <style scoped>
 .card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  background: var(--apple-card-bg);
+  border-radius: var(--apple-radius-lg);
+  box-shadow: var(--apple-shadow);
+  border: 1px solid var(--apple-border);
+  overflow: hidden;
 }
 
 .table-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--apple-border);
 }
 
 .section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.table-actions {
-  display: flex;
-  gap: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--apple-text-primary);
+  letter-spacing: -0.02em;
 }
 
 .btn-primary {
   padding: 10px 20px;
-  background: #1a73e8;
+  background: var(--apple-blue);
   color: #fff;
-  border-radius: 8px;
+  border-radius: 20px;
   font-size: 14px;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.btn-primary:hover {
-  background: #1557b0;
-}
-
-.btn-outline {
-  padding: 10px 20px;
-  background: #fff;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s;
 }
 
-.btn-outline:hover {
-  background: #f9fafb;
+.btn-primary:hover {
+  background: #0077ed;
+}
+
+.table-wrap {
+  overflow-x: auto;
 }
 
 .table {
@@ -175,13 +169,44 @@ export default {
 
 .table th {
   text-align: left;
-  padding: 14px 12px;
+  padding: 16px 32px;
   font-size: 13px;
-  font-weight: 500;
-  color: #858d9d;
-  border-bottom: 1px solid #e5e7eb;
-  background: #f9fafb;
+  font-weight: 600;
+  color: var(--apple-text-secondary);
+  background: var(--apple-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   white-space: nowrap;
+}
+
+.table td {
+  padding: 18px 32px;
+  font-size: 15px;
+  color: var(--apple-text-primary);
+  border-bottom: 1px solid var(--apple-border);
+  vertical-align: middle;
+}
+
+.name-cell {
+  font-weight: 600;
+}
+
+.qty-cell {
+  font-weight: 500;
+}
+
+.date-cell {
+  color: var(--apple-text-secondary);
+  font-size: 14px;
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.clickable-row:hover {
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .sortable {
@@ -190,47 +215,39 @@ export default {
 }
 
 .sortable:hover {
-  color: #111827;
+  color: var(--apple-text-primary);
 }
 
 .sort-indicator {
-  font-weight: 900;
-  margin-left: 6px;
-  color: #111827;
-}
-
-.table td {
-  padding: 16px 12px;
-  font-size: 14px;
-  color: #1f2937;
-  border-bottom: 1px solid #f3f4f6;
-  vertical-align: top;
-}
-
-.clickable-row {
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.clickable-row:hover {
-  background: #f5f8ff;
+  font-weight: 700;
+  color: var(--apple-blue);
 }
 
 .availability-badge {
   font-size: 13px;
-  font-weight: 500;
-  padding: 4px 0;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+  display: inline-block;
 }
 
 .in-stock {
-  color: #16a34a;
+  color: var(--apple-green);
+  background: rgba(52, 199, 89, 0.1);
 }
 
 .out-of-stock {
-  color: #dc2626;
+  color: var(--apple-red);
+  background: rgba(255, 59, 48, 0.1);
 }
 
 .low-stock {
-  color: #d97706;
+  color: var(--apple-orange);
+  background: rgba(255, 149, 0, 0.1);
+}
+
+.table-footer {
+  padding: 16px 32px;
+  background: var(--apple-gray);
 }
 </style>

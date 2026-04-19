@@ -2,8 +2,8 @@
   <div class="history">
     <div class="header">
       <h3 class="title">Stock history</h3>
-      <span class="muted" v-if="events && events.length">
-        {{ events.length }} record{{ events.length === 1 ? "" : "s" }}
+      <span class="pill pill-neutral" v-if="events && events.length">
+        {{ events.length }} records
       </span>
     </div>
 
@@ -35,84 +35,103 @@ export default {
       if (!iso) return "—"
       const d = new Date(iso)
       if (Number.isNaN(d.getTime())) return String(iso)
-      return d.toLocaleString()
+      return d.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
     },
   },
 }
 </script>
 
 <style scoped>
-.history {
-  margin-top: 18px;
-  border-top: 1px solid #f3f4f6;
-  padding-top: 18px;
-}
-
 .header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 24px;
 }
 
 .title {
-  font-size: 16px;
-  font-weight: 800;
-  color: #111827;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--apple-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.pill {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.pill-neutral {
+  color: var(--apple-text-secondary);
+  background: var(--apple-gray);
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .row {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
-  padding: 12px;
-  border: 1px solid #f3f4f6;
-  border-radius: 12px;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--apple-gray);
+  border-radius: var(--apple-radius-md);
+  transition: transform 0.2s ease;
+}
+
+.row:hover {
+  transform: scale(1.01);
 }
 
 .left {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 16px;
 }
 
 .delta {
-  font-weight: 900;
-  color: #111827;
+  font-size: 18px;
+  font-weight: 800;
+  min-width: 60px;
 }
 
 .delta.pos {
-  color: #16a34a;
+  color: var(--apple-green);
 }
 
 .delta.neg {
-  color: #dc2626;
+  color: var(--apple-red);
 }
 
 .reason {
-  font-size: 13px;
-  font-weight: 700;
-  color: #111827;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--apple-text-primary);
 }
 
 .muted {
-  color: #6b7280;
-  font-size: 12px;
-  font-weight: 600;
+  color: var(--apple-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .empty {
-  padding: 12px;
-  color: #6b7280;
-  font-size: 13px;
-  border: 1px dashed #e5e7eb;
-  border-radius: 12px;
+  padding: 40px;
+  color: var(--apple-text-secondary);
+  font-size: 15px;
+  text-align: center;
+  border: 2px dashed var(--apple-border);
+  border-radius: var(--apple-radius-md);
 }
 </style>
-

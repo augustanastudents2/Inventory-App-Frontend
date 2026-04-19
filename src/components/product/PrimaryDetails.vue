@@ -20,7 +20,10 @@
       </div>
       <div class="detail-row">
         <span class="detail-label">Use tags</span>
-        <span class="detail-value">{{ tagsText }}</span>
+        <div class="tags-row" v-if="product.tags && product.tags.length">
+          <span class="tag" v-for="tag in product.tags" :key="tag">#{{ tag }}</span>
+        </div>
+        <span class="detail-value" v-else>—</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Storage</span>
@@ -53,10 +56,6 @@ export default {
     product: Object,
   },
   computed: {
-    tagsText() {
-      const tags = Array.isArray(this.product?.tags) ? this.product.tags : []
-      return tags.length ? tags.join(", ") : "—"
-    },
     storageText() {
       const a = this.product?.storage?.area || ""
       const s = this.product?.storage?.sub || ""
@@ -75,45 +74,74 @@ export default {
       if (!iso) return "—"
       const d = new Date(iso)
       if (Number.isNaN(d.getTime())) return String(iso)
-      return d.toLocaleString()
+      return d.toLocaleDateString(undefined, {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
     },
   },
 }
 </script>
 
 <style scoped>
-.primary-details {
-  margin-bottom: 32px;
-}
-
 .section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--apple-text-primary);
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
 }
 
 .detail-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .detail-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--apple-border);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
 }
 
 .detail-label {
-  width: 200px;
-  font-size: 14px;
-  color: #858d9d;
+  width: 180px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--apple-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   flex-shrink: 0;
+  padding-top: 2px;
 }
 
 .detail-value {
-  font-size: 14px;
-  color: #1f2937;
+  font-size: 16px;
+  color: var(--apple-text-primary);
   font-weight: 500;
+  line-height: 1.4;
+}
+
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--apple-blue);
+  background: rgba(0, 113, 227, 0.05);
+  padding: 4px 12px;
+  border-radius: 12px;
 }
 </style>

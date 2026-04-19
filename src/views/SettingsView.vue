@@ -1,19 +1,96 @@
 <template>
   <AppLayout>
     <div class="settings-page">
-      <div class="header">
+      <header class="settings-header">
         <div>
           <h2 class="title">Settings</h2>
           <p class="subtitle">
-            Manage categories, tags, storage locations, and vendors.
+            Manage categories, tags, storage locations, vendors, and user access.
           </p>
         </div>
-      </div>
+      </header>
 
-      <div class="grid">
+      <div class="settings-grid">
+        <!-- User Management Section (Admin Only) -->
+        <section class="card full-width" v-if="isAdmin">
+          <div class="card-header-with-action">
+            <h3 class="card-title">User Management</h3>
+            <p class="card-subtitle">Add new users and manage roles.</p>
+          </div>
+
+          <form class="user-form" @submit.prevent="handleAddUser">
+            <div class="form-grid">
+              <div class="input-group">
+                <label>Full Name</label>
+                <input v-model.trim="newUser.name" class="input" placeholder="e.g. John Doe" required />
+              </div>
+              <div class="input-group">
+                <label>Email Address</label>
+                <input v-model.trim="newUser.email" type="email" class="input" placeholder="e.g. john@asa.com" required />
+              </div>
+              <div class="input-group">
+                <label>Role</label>
+                <select v-model="newUser.role" class="input select">
+                  <option value="Staff">Staff</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </div>
+              <div class="input-group action-group">
+                <button class="btn-primary" type="submit">Add User</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="user-list">
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="u in users" :key="u.id">
+                    <td class="font-600">{{ u.name }}</td>
+                    <td class="muted">{{ u.email }}</td>
+                    <td>
+                      <select 
+                        :value="u.role" 
+                        @change="handleRoleChange(u.id, $event.target.value)"
+                        class="role-select"
+                        :disabled="u.id === currentUser.id"
+                      >
+                        <option value="Staff">Staff</option>
+                        <option value="Admin">Admin</option>
+                      </select>
+                    </td>
+                    <td class="text-right">
+                      <button 
+                        class="btn-icon-danger" 
+                        @click="handleDeleteUser(u)"
+                        :disabled="u.id === currentUser.id"
+                        aria-label="Delete User"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Categories -->
         <section class="card">
           <h3 class="card-title">Categories</h3>
-          <form class="row" @submit.prevent="addCategory">
+          <form class="input-row" @submit.prevent="addCategory">
             <input
               v-model.trim="newCategory"
               class="input"
@@ -22,19 +99,47 @@
             <button class="btn-primary" type="submit">Add</button>
           </form>
           <div class="list">
-            <div class="list-row" v-for="c in categories" :key="c">
-              <span class="name">{{ c }}</span>
-              <button class="btn-danger" @click="removeCategory(c)">
-                Remove
-              </button>
+            <div class="list-item" v-for="c in categories" :key="c">
+              <div v-if="editingCategory === c" class="edit-row">
+                <input v-model.trim="editCategoryValue" class="input small" @keyup.enter="saveEditCategory(c)" />
+                <button class="btn-icon-success" @click="saveEditCategory(c)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </button>
+                <button class="btn-icon-neutral" @click="editingCategory = null">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+              <template v-else>
+                <span class="name">{{ c }}</span>
+                <div class="actions">
+                  <button class="btn-icon-neutral" @click="startEditCategory(c)" aria-label="Edit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
+                  <button class="btn-icon-danger" @click="removeCategory(c)" aria-label="Remove">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </div>
+              </template>
             </div>
             <div v-if="!categories.length" class="empty">No categories yet.</div>
           </div>
         </section>
 
+        <!-- Tags -->
         <section class="card">
           <h3 class="card-title">Use Tags</h3>
-          <form class="row" @submit.prevent="addTag">
+          <form class="input-row" @submit.prevent="addTag">
             <input
               v-model.trim="newTag"
               class="input"
@@ -43,17 +148,47 @@
             <button class="btn-primary" type="submit">Add</button>
           </form>
           <div class="list">
-            <div class="list-row" v-for="t in tags" :key="t">
-              <span class="name">{{ t }}</span>
-              <button class="btn-danger" @click="removeTag(t)">Remove</button>
+            <div class="list-item" v-for="t in tags" :key="t">
+              <div v-if="editingTag === t" class="edit-row">
+                <input v-model.trim="editTagValue" class="input small" @keyup.enter="saveEditTag(t)" />
+                <button class="btn-icon-success" @click="saveEditTag(t)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </button>
+                <button class="btn-icon-neutral" @click="editingTag = null">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+              <template v-else>
+                <span class="name">#{{ t }}</span>
+                <div class="actions">
+                  <button class="btn-icon-neutral" @click="startEditTag(t)" aria-label="Edit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
+                  <button class="btn-icon-danger" @click="removeTag(t)" aria-label="Remove">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </div>
+              </template>
             </div>
             <div v-if="!tags.length" class="empty">No tags yet.</div>
           </div>
         </section>
 
+        <!-- Storage Locations -->
         <section class="card">
           <h3 class="card-title">Storage Locations</h3>
-          <form class="row row-2" @submit.prevent="addStorage">
+          <form class="input-row-multi" @submit.prevent="addStorage">
             <input
               v-model.trim="newStorageArea"
               class="input"
@@ -62,24 +197,52 @@
             <input
               v-model.trim="newStorageSub"
               class="input"
-              placeholder="Sub-location (e.g. Shelf 2)"
+              placeholder="Sub (e.g. Shelf 2)"
             />
             <button class="btn-primary" type="submit">Add</button>
           </form>
           <div class="list">
             <div
-              class="list-row"
+              class="list-item"
               v-for="loc in storageLocations"
               :key="loc.area + '|' + loc.sub"
             >
-              <span class="name">
-                {{ loc.area }}<span v-if="loc.sub" class="muted">
-                  &nbsp;· {{ loc.sub }}</span
-                >
-              </span>
-              <button class="btn-danger" @click="removeStorage(loc)">
-                Remove
-              </button>
+              <div v-if="editingStorage === loc" class="edit-row-multi">
+                <input v-model.trim="editStorageArea" class="input small" placeholder="Area" />
+                <input v-model.trim="editStorageSub" class="input small" placeholder="Sub" />
+                <button class="btn-icon-success" @click="saveEditStorage(loc)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </button>
+                <button class="btn-icon-neutral" @click="editingStorage = null">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+              <template v-else>
+                <span class="name">
+                  {{ loc.area }}<span v-if="loc.sub" class="muted">
+                    &nbsp;· {{ loc.sub }}</span
+                  >
+                </span>
+                <div class="actions">
+                  <button class="btn-icon-neutral" @click="startEditStorage(loc)" aria-label="Edit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
+                  <button class="btn-icon-danger" @click="removeStorage(loc)" aria-label="Remove">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </div>
+              </template>
             </div>
             <div v-if="!storageLocations.length" class="empty">
               No storage locations yet.
@@ -87,13 +250,14 @@
           </div>
         </section>
 
+        <!-- Vendors -->
         <section class="card">
           <h3 class="card-title">Vendors</h3>
-          <form class="row row-2" @submit.prevent="addVendor">
+          <form class="input-row-multi" @submit.prevent="addVendor">
             <input
               v-model.trim="newVendorName"
               class="input"
-              placeholder="Vendor name (e.g. Staples)"
+              placeholder="Name (e.g. Staples)"
             />
             <input
               v-model.trim="newVendorContact"
@@ -103,14 +267,42 @@
             <button class="btn-primary" type="submit">Add</button>
           </form>
           <div class="list">
-            <div class="list-row" v-for="v in vendors" :key="v.name">
-              <span class="name">
-                {{ v.name
-                }}<span v-if="v.contact" class="muted"> · {{ v.contact }}</span>
-              </span>
-              <button class="btn-danger" @click="removeVendor(v.name)">
-                Remove
-              </button>
+            <div class="list-item" v-for="v in vendors" :key="v.name">
+              <div v-if="editingVendor === v.name" class="edit-row-multi">
+                <input v-model.trim="editVendorName" class="input small" placeholder="Name" />
+                <input v-model.trim="editVendorContact" class="input small" placeholder="Contact" />
+                <button class="btn-icon-success" @click="saveEditVendor(v.name)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </button>
+                <button class="btn-icon-neutral" @click="editingVendor = null">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+              <template v-else>
+                <span class="name">
+                  {{ v.name
+                  }}<span v-if="v.contact" class="muted"> · {{ v.contact }}</span>
+                </span>
+                <div class="actions">
+                  <button class="btn-icon-neutral" @click="startEditVendor(v)" aria-label="Edit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
+                  <button class="btn-icon-danger" @click="removeVendor(v.name)" aria-label="Remove">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </div>
+              </template>
             </div>
             <div v-if="!vendors.length" class="empty">No vendors yet.</div>
           </div>
@@ -134,9 +326,33 @@ export default {
       newStorageSub: "",
       newVendorName: "",
       newVendorContact: "",
+      newUser: {
+        name: "",
+        email: "",
+        role: "Staff"
+      },
+      editingCategory: null,
+      editCategoryValue: "",
+      editingTag: null,
+      editTagValue: "",
+      editingStorage: null,
+      editStorageArea: "",
+      editStorageSub: "",
+      editingVendor: null,
+      editVendorName: "",
+      editVendorContact: ""
     }
   },
   computed: {
+    isAdmin() {
+      return this.$store.getters.isAdmin
+    },
+    currentUser() {
+      return this.$store.state.user || {}
+    },
+    users() {
+      return this.$store.state.users || []
+    },
     categories() {
       return this.$store.state.categories || []
     },
@@ -151,21 +367,62 @@ export default {
     },
   },
   methods: {
+    handleAddUser() {
+      this.$store.dispatch("addUser", { ...this.newUser })
+      this.newUser = { name: "", email: "", role: "Staff" }
+    },
+    handleRoleChange(userId, role) {
+      this.$store.dispatch("updateUserRole", { userId, role })
+    },
+    handleDeleteUser(user) {
+      if (confirm(`Are you sure you want to remove ${user.name}?`)) {
+        this.$store.dispatch("deleteUser", user.id)
+      }
+    },
     addCategory() {
+      if (!this.newCategory) return
       this.$store.dispatch("addCategory", this.newCategory)
       this.newCategory = ""
     },
+    startEditCategory(name) {
+      this.editingCategory = name
+      this.editCategoryValue = name
+    },
+    saveEditCategory(oldName) {
+      if (!this.editCategoryValue || this.editCategoryValue === oldName) {
+        this.editingCategory = null
+        return
+      }
+      this.$store.dispatch("updateCategory", { oldName, newName: this.editCategoryValue })
+      this.editingCategory = null
+    },
     removeCategory(name) {
-      this.$store.dispatch("deleteCategory", name)
+      if (confirm(`Remove category "${name}"? Items in this category will be marked as Uncategorized.`)) {
+        this.$store.dispatch("deleteCategory", name)
+      }
     },
     addTag() {
+      if (!this.newTag) return
       this.$store.dispatch("addTag", this.newTag)
       this.newTag = ""
+    },
+    startEditTag(name) {
+      this.editingTag = name
+      this.editTagValue = name
+    },
+    saveEditTag(oldName) {
+      if (!this.editTagValue || this.editTagValue === oldName) {
+        this.editingTag = null
+        return
+      }
+      this.$store.dispatch("updateTag", { oldName, newName: this.editTagValue })
+      this.editingTag = null
     },
     removeTag(name) {
       this.$store.dispatch("deleteTag", name)
     },
     addStorage() {
+      if (!this.newStorageArea) return
       this.$store.dispatch("addStorageLocation", {
         area: this.newStorageArea,
         sub: this.newStorageSub,
@@ -173,16 +430,39 @@ export default {
       this.newStorageArea = ""
       this.newStorageSub = ""
     },
+    startEditStorage(loc) {
+      this.editingStorage = loc
+      this.editStorageArea = loc.area
+      this.editStorageSub = loc.sub
+    },
+    saveEditStorage(oldLoc) {
+      const newLoc = { area: this.editStorageArea, sub: this.editStorageSub }
+      if (!newLoc.area) return
+      this.$store.dispatch("updateStorageLocation", { oldLoc, newLoc })
+      this.editingStorage = null
+    },
     removeStorage(loc) {
       this.$store.dispatch("deleteStorageLocation", loc)
     },
     addVendor() {
+      if (!this.newVendorName) return
       this.$store.dispatch("addVendor", {
         name: this.newVendorName,
         contact: this.newVendorContact,
       })
       this.newVendorName = ""
       this.newVendorContact = ""
+    },
+    startEditVendor(v) {
+      this.editingVendor = v.name
+      this.editVendorName = v.name
+      this.editVendorContact = v.contact
+    },
+    saveEditVendor(oldName) {
+      const newVendor = { name: this.editVendorName, contact: this.editVendorContact }
+      if (!newVendor.name) return
+      this.$store.dispatch("updateVendor", { oldName, newVendor })
+      this.editingVendor = null
     },
     removeVendor(name) {
       this.$store.dispatch("deleteVendor", name)
@@ -195,143 +475,322 @@ export default {
 .settings-page {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 32px;
 }
 
-.header {
+.settings-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
 }
 
 .title {
-  font-size: 20px;
-  font-weight: 800;
-  color: #111827;
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--apple-text-primary);
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
 .subtitle {
-  margin-top: 6px;
-  color: #6b7280;
-  font-size: 13px;
+  margin-top: 8px;
+  color: var(--apple-text-secondary);
+  font-size: 17px;
 }
 
-.grid {
+.settings-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  gap: 24px;
 }
 
 .card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  border: 1px solid #f3f4f6;
+  background: var(--apple-card-bg);
+  border-radius: var(--apple-radius-lg);
+  padding: 24px;
+  box-shadow: var(--apple-shadow);
+  border: 1px solid var(--apple-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width {
+  grid-column: 1 / -1;
 }
 
 .card-title {
-  font-size: 16px;
-  font-weight: 800;
-  color: #111827;
-  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--apple-text-primary);
+  margin-bottom: 4px;
 }
 
-.row {
+.card-subtitle {
+  font-size: 14px;
+  color: var(--apple-text-secondary);
+  margin-bottom: 24px;
+}
+
+.user-form {
+  background: var(--apple-gray);
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+
+.form-grid {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 12px;
+  grid-template-columns: 1fr 1fr 150px auto;
+  gap: 16px;
+  align-items: flex-end;
 }
 
-.row-2 {
-  grid-template-columns: 1fr 1fr auto;
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--apple-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-left: 4px;
 }
 
 .input {
-  padding: 10px 12px;
-  border: 1px solid #d0d5dd;
-  border-radius: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: none;
+  background: var(--apple-card-bg);
+  font-size: 15px;
+  color: var(--apple-text-primary);
+  border: 1px solid var(--apple-border);
+}
+
+.input.small {
+  padding: 6px 12px;
   font-size: 14px;
 }
 
 .input:focus {
-  outline: none;
-  border-color: #1a73e8;
-  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.12);
+  border-color: var(--apple-blue);
+  background: var(--apple-card-bg);
+}
+
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.user-list {
+  margin-top: 8px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--apple-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--apple-border);
+}
+
+.table td {
+  padding: 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--apple-border);
+}
+
+.font-600 { font-weight: 600; }
+.text-right { text-align: right; }
+
+.role-select {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--apple-border);
+  background: var(--apple-gray);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.role-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.input-row-multi {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.edit-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+}
+
+.edit-row-multi {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto auto;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
 }
 
 .btn-primary {
-  padding: 10px 14px;
-  border: none;
-  border-radius: 10px;
-  background: #1a73e8;
+  padding: 10px 20px;
+  background: var(--apple-blue);
   color: #fff;
+  border-radius: 20px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .btn-primary:hover {
-  background: #1557b0;
-}
-
-.btn-danger {
-  padding: 8px 12px;
-  border-radius: 10px;
-  background: #fff;
-  border: 1px solid #fecaca;
-  color: #dc2626;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.btn-danger:hover {
-  background: #fef2f2;
+  background: #0077ed;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
-.list-row {
+.list-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border: 1px solid #f3f4f6;
+  padding: 12px 16px;
+  background: var(--apple-gray);
   border-radius: 12px;
+  transition: transform 0.2s ease;
+}
+
+.list-item:hover {
+  transform: scale(1.01);
 }
 
 .name {
-  font-size: 14px;
-  font-weight: 700;
-  color: #111827;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--apple-text-primary);
 }
 
 .muted {
-  color: #6b7280;
-  font-weight: 600;
+  color: var(--apple-text-secondary);
+  font-weight: 400;
+}
+
+.actions {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-icon-danger {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--apple-red);
+  background: transparent;
+}
+
+.btn-icon-danger:hover:not(:disabled) {
+  background: rgba(255, 59, 48, 0.1);
+}
+
+.btn-icon-danger:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-icon-neutral {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--apple-text-secondary);
+  background: transparent;
+}
+
+.btn-icon-neutral:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--apple-text-primary);
+}
+
+.btn-icon-success {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--apple-green);
+  background: transparent;
+}
+
+.btn-icon-success:hover {
+  background: rgba(52, 199, 89, 0.1);
 }
 
 .empty {
-  padding: 12px;
-  color: #6b7280;
-  font-size: 13px;
-  border: 1px dashed #e5e7eb;
+  padding: 24px;
+  color: var(--apple-text-secondary);
+  font-size: 15px;
+  text-align: center;
+  border: 2px dashed var(--apple-border);
   border-radius: 12px;
 }
 
 @media (max-width: 900px) {
-  .grid {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .settings-grid {
     grid-template-columns: 1fr;
   }
-  .row-2 {
+  .input-row-multi {
     grid-template-columns: 1fr;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .edit-row-multi {
+    grid-template-columns: 1fr 1fr auto auto;
   }
 }
 </style>

@@ -31,29 +31,34 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 24px;
 }
 
 .modal-container {
-  background: #fff;
-  border-radius: 12px;
-  width: 90%;
+  background: var(--apple-card-bg);
+  border-radius: var(--apple-radius-lg);
+  width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--apple-border);
 }
 
 .modal-enter-active,
 .modal-leave-active {
-  transition: opacity 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .modal-enter-from,
 .modal-leave-to {
   opacity: 0;
+  transform: scale(0.95) translateY(10px);
 }
 </style>

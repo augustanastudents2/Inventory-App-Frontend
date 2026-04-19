@@ -7,7 +7,9 @@
         @search="$emit('search', $event)"
       />
       <main class="page-content">
-        <slot />
+        <div class="content-container">
+          <slot />
+        </div>
       </main>
     </div>
   </div>
@@ -23,7 +25,7 @@ export default {
   props: {
     searchPlaceholder: {
       type: String,
-      default: "Search product, supplier, order",
+      default: "Search item, category, storage, vendor",
     },
   },
 };
@@ -33,18 +35,24 @@ export default {
 .app-layout {
   display: flex;
   min-height: 100vh;
+  background-color: var(--apple-bg);
 }
 
 .main-content {
   flex: 1;
-  margin-left: 240px;
+  margin-left: 260px;
   display: flex;
   flex-direction: column;
 }
 
 .page-content {
   flex: 1;
-  padding: 24px 32px;
-  background: #f0f1f3;
+  padding: 32px;
+}
+
+.content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 </style>
