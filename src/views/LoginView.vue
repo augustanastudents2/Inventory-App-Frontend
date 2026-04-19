@@ -31,15 +31,6 @@
             />
           </div>
 
-          <div class="form-options">
-            <label class="checkbox-container">
-              <input type="checkbox" v-model="rememberMe" />
-              <span class="checkmark"></span>
-              Remember me
-            </label>
-            <a href="#" class="forgot-link">Forgot password?</a>
-          </div>
-
           <button type="submit" class="btn-primary" :disabled="loading">
             <span v-if="loading">Signing in...</span>
             <span v-else>Sign In</span>
