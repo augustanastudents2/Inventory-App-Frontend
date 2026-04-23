@@ -433,6 +433,12 @@ export default {
         }
         this.newUser = { name: "", email: "", role: "Staff", password: "" }
       } catch (e) {
+        const status = e?.response?.status
+        const detail = e?.response?.data?.detail
+        if (status === 409) {
+          alert(detail || "A user with this email already exists.")
+          return
+        }
         console.error("Error creating user:", e)
         alert("Failed to create user. Check console for details.")
       }
