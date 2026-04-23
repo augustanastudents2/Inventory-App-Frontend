@@ -310,5 +310,20 @@ export default {
     padding: 0 12px;
     height: 64px;
   }
+  /* Keep menu + profile on first row; move search below */
+  .menu-btn {
+    order: 1;
+    flex: 0 0 auto;
+  }
+  .topbar-right {
+    order: 2;
+    margin-left: auto;
+    flex: 0 0 auto;
+  }
+  .search-container {
+    order: 3;
+    flex: 1 1 100%;
+    max-width: none;
+  }
 }
 </style>
