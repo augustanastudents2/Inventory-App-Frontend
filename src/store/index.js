@@ -214,6 +214,15 @@ export default createStore({
         console.error("Error adding tag:", error);
       }
     },
+    async deleteTag({ dispatch }, name) {
+      try {
+        await api.delete(`/settings/tags/${encodeURIComponent(name)}`);
+        await dispatch("fetchSettings");
+        await dispatch("fetchProducts");
+      } catch (error) {
+        console.error("Error deleting tag:", error);
+      }
+    },
     async addStorageLocation({ dispatch }, loc) {
       try {
         await api.post("/settings/storage-locations", loc);
@@ -222,12 +231,32 @@ export default createStore({
         console.error("Error adding storage location:", error);
       }
     },
+    async deleteStorageLocation({ dispatch }, loc) {
+      try {
+        await api.delete("/settings/storage-locations", {
+          params: { area: loc?.area, sub: loc?.sub ?? null },
+        });
+        await dispatch("fetchSettings");
+        await dispatch("fetchProducts");
+      } catch (error) {
+        console.error("Error deleting storage location:", error);
+      }
+    },
     async addVendor({ dispatch }, vendor) {
       try {
         await api.post("/settings/vendors", vendor);
         await dispatch("fetchSettings");
       } catch (error) {
         console.error("Error adding vendor:", error);
+      }
+    },
+    async deleteVendor({ dispatch }, name) {
+      try {
+        await api.delete(`/settings/vendors/${encodeURIComponent(name)}`);
+        await dispatch("fetchSettings");
+        await dispatch("fetchProducts");
+      } catch (error) {
+        console.error("Error deleting vendor:", error);
       }
     },
     async updateCategory({ dispatch }, { oldName, newName }) {
