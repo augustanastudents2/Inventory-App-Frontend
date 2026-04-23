@@ -172,6 +172,7 @@ export default createStore({
         await dispatch("fetchUsers");
       } catch (error) {
         console.error("Error adding user:", error);
+        throw error;
       }
     },
     async updateUserRole({ dispatch }, { userId, role }) {

@@ -396,6 +396,7 @@ export default {
       const loginUrl = import.meta.env.VITE_APP_LOGIN_URL
       const appName = import.meta.env.VITE_APP_NAME || "ASA App"
       if (!publicKey || !serviceId || !templateId) return
+      if (!email) throw new Error("Missing recipient email")
 
       const emailjs = await import("@emailjs/browser")
       await emailjs.send(
@@ -417,10 +418,19 @@ export default {
     },
     async _handleAddUser() {
       try {
+        if (!this.newUser?.email) {
+          alert("Please enter an email address.")
+          return
+        }
         const password = await this.generatePassword()
         const payload = { ...this.newUser, password }
         await this.$store.dispatch("addUser", payload)
-        await this.sendWelcomeEmail({ email: payload.email, name: payload.name, password })
+        try {
+          await this.sendWelcomeEmail({ email: payload.email, name: payload.name, password })
+        } catch (emailErr) {
+          console.error("EmailJS send failed:", emailErr)
+          alert("User created, but failed to send email. Please copy the password and share it manually.")
+        }
         this.newUser = { name: "", email: "", role: "Staff", password: "" }
       } catch (e) {
         console.error("Error creating user:", e)
