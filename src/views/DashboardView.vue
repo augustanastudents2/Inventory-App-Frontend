@@ -446,4 +446,19 @@ export default {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 700px) {
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .kpi {
+    width: 100%;
+    text-align: left;
+  }
+  .chart-container,
+  .summary {
+    padding: 16px;
+  }
+}
 </style>

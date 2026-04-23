@@ -1,5 +1,18 @@
 <template>
   <header class="topbar">
+    <button
+      v-if="showMenuButton"
+      class="menu-btn"
+      type="button"
+      aria-label="Open menu"
+      @click="$emit('toggle-menu')"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20">
+        <line x1="4" y1="6" x2="20" y2="6" />
+        <line x1="4" y1="12" x2="20" y2="12" />
+        <line x1="4" y1="18" x2="20" y2="18" />
+      </svg>
+    </button>
     <div class="search-container">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <circle cx="11" cy="11" r="8" />
@@ -51,6 +64,10 @@ export default {
     searchPlaceholder: {
       type: String,
       default: "Search item, category, storage, vendor",
+    },
+    showMenuButton: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -108,6 +125,23 @@ export default {
   position: sticky;
   top: 0;
   z-index: 50;
+  gap: 12px;
+}
+
+.menu-btn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--apple-border);
+  background: rgba(0, 0, 0, 0.03);
+  color: var(--apple-text-primary);
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
 }
 
 .search-container {
@@ -253,5 +287,25 @@ export default {
 .dropdown-leave-to {
   opacity: 0;
   transform: scale(0.95) translateY(-10px);
+}
+
+@media (max-width: 900px) {
+  .topbar {
+    padding: 0 16px;
+  }
+  .menu-btn {
+    display: inline-flex;
+  }
+  .search-container {
+    width: 100%;
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 600px) {
+  .topbar {
+    padding: 0 12px;
+    height: 64px;
+  }
 }
 </style>

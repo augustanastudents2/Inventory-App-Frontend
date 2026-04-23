@@ -250,4 +250,35 @@ export default {
   padding: 16px 32px;
   background: var(--apple-gray);
 }
+
+@media (max-width: 900px) {
+  .table-header {
+    padding: 18px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+  .table th,
+  .table td {
+    padding: 14px 18px;
+  }
+  .table-footer {
+    padding: 14px 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  .table th,
+  .table td {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  .date-cell {
+    font-size: 13px;
+  }
+}
 </style>

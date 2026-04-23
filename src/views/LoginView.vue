@@ -215,4 +215,16 @@ export default {
 .public-link:hover {
   color: var(--apple-blue);
 }
+
+@media (max-width: 600px) {
+  .login-page {
+    padding: 16px;
+  }
+  .login-card {
+    padding: 28px;
+  }
+  .logo {
+    width: 96px;
+  }
+}
 </style>

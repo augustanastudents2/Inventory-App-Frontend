@@ -310,5 +310,27 @@ export default {
     flex-direction: column;
     align-items: flex-start;
   }
+  .header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .btn-secondary,
+  .btn-danger {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 18px;
+  }
+  .product-name {
+    font-size: 26px;
+  }
+  .btn-back {
+    padding: 8px 12px;
+  }
 }
 </style>

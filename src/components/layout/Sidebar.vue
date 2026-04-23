@@ -1,5 +1,5 @@
 <template>
-  <aside class="sidebar">
+  <aside class="sidebar" :class="{ open }">
     <div class="sidebar-logo">
       <img src="/assets/asa-logo.png" alt="ASA Logo" class="logo-img" />
     </div>
@@ -9,6 +9,7 @@
         to="/dashboard"
         class="nav-item"
         :class="{ active: $route.path === '/dashboard' }"
+        @click="$emit('close')"
       >
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -21,6 +22,7 @@
         to="/inventory"
         class="nav-item"
         :class="{ active: $route.path.startsWith('/inventory') }"
+        @click="$emit('close')"
       >
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
@@ -34,6 +36,7 @@
         to="/settings"
         class="nav-item"
         :class="{ active: $route.path === '/settings' }"
+        @click="$emit('close')"
       >
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3" />
@@ -48,6 +51,7 @@
         to="/"
         class="nav-item public-link"
         :class="{ active: $route.path === '/' }"
+        @click="$emit('close')"
       >
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10" />
@@ -73,6 +77,10 @@
 <script>
 export default {
   name: "SidebarComponent",
+  props: {
+    open: { type: Boolean, default: false },
+  },
+  emits: ["close"],
   methods: {
     handleLogout() {
       this.$store.dispatch("logout");
@@ -95,6 +103,7 @@ export default {
   top: 0;
   z-index: 100;
   padding: 20px 12px;
+  transition: transform 0.25s ease;
 }
 
 .sidebar-logo {
@@ -171,5 +180,15 @@ export default {
 
 .public-link:hover {
   background: rgba(0, 113, 227, 0.1);
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
 }
 </style>

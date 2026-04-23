@@ -1,9 +1,16 @@
 <template>
   <div class="app-layout">
-    <Sidebar />
+    <Sidebar :open="sidebarOpen" @close="sidebarOpen = false" />
+    <div
+      v-if="sidebarOpen"
+      class="sidebar-backdrop"
+      @click="sidebarOpen = false"
+    />
     <div class="main-content">
       <TopBar
         :searchPlaceholder="searchPlaceholder"
+        :showMenuButton="true"
+        @toggle-menu="sidebarOpen = !sidebarOpen"
         @search="$emit('search', $event)"
       />
       <main class="page-content">
@@ -28,6 +35,16 @@ export default {
       default: "Search item, category, storage, vendor",
     },
   },
+  data() {
+    return {
+      sidebarOpen: false,
+    };
+  },
+  watch: {
+    $route() {
+      this.sidebarOpen = false;
+    },
+  },
 };
 </script>
 
@@ -45,6 +62,13 @@ export default {
   flex-direction: column;
 }
 
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 90;
+}
+
 .page-content {
   flex: 1;
   padding: 32px;
@@ -54,5 +78,20 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    margin-left: 0;
+  }
+  .page-content {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-content {
+    padding: 14px;
+  }
 }
 </style>

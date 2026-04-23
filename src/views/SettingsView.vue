@@ -846,8 +846,22 @@ export default {
 }
 
 @media (max-width: 900px) {
+  .settings-header {
+    flex-direction: column;
+    gap: 12px;
+  }
   .form-grid {
     grid-template-columns: 1fr 1fr;
+  }
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 18px;
+  }
+  .table th,
+  .table td {
+    padding: 12px;
   }
 }
 
@@ -858,11 +872,28 @@ export default {
   .input-row-multi {
     grid-template-columns: 1fr;
   }
+  .input-row {
+    flex-direction: column;
+  }
+  .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
   .form-grid {
     grid-template-columns: 1fr;
   }
   .edit-row-multi {
     grid-template-columns: 1fr 1fr auto auto;
+  }
+  .list-item {
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .name {
+    word-break: break-word;
+  }
+  .actions {
+    margin-left: auto;
   }
 }
 </style>

@@ -51,6 +51,17 @@ export default {
   border: 1px solid var(--apple-border);
 }
 
+@media (max-width: 600px) {
+  .modal-overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+  .modal-container {
+    max-height: 92vh;
+    border-radius: 16px;
+  }
+}
+
 .modal-enter-active,
 .modal-leave-active {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
