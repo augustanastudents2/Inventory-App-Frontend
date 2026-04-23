@@ -126,6 +126,7 @@ export default {
   top: 0;
   z-index: 50;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .menu-btn {
@@ -147,6 +148,8 @@ export default {
 .search-container {
   position: relative;
   width: 400px;
+  flex: 1 1 320px;
+  min-width: 0;
 }
 
 .search-icon {

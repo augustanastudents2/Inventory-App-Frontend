@@ -35,12 +35,12 @@
             @click="$emit('view-product', product)"
             class="clickable-row"
           >
-            <td class="name-cell">{{ product.name }}</td>
-            <td>{{ product.category || "—" }}</td>
-            <td>{{ storageText(product) }}</td>
-            <td>{{ product.vendor?.name || "—" }}</td>
-            <td class="qty-cell">{{ product.quantity }} {{ product.unit }}</td>
-            <td>
+            <td class="name-cell" data-label="Item">{{ product.name }}</td>
+            <td data-label="Category">{{ product.category || "—" }}</td>
+            <td data-label="Storage">{{ storageText(product) }}</td>
+            <td data-label="Vendor">{{ product.vendor?.name || "—" }}</td>
+            <td class="qty-cell" data-label="Qty">{{ product.quantity }} {{ product.unit }}</td>
+            <td data-label="Status">
               <span
                 :class="[
                   'availability-badge',
@@ -50,7 +50,7 @@
                 {{ product.availability }}
               </span>
             </td>
-            <td class="date-cell">{{ formatDate(product.updatedAt) }}</td>
+            <td class="date-cell" data-label="Updated">{{ formatDate(product.updatedAt) }}</td>
           </tr>
         </tbody>
       </table>
@@ -272,13 +272,39 @@ export default {
 }
 
 @media (max-width: 600px) {
-  .table th,
+  .table thead {
+    display: none;
+  }
+  .table,
+  .table tbody,
+  .table tr,
   .table td {
+    display: block;
+    width: 100%;
+  }
+  .table tr {
+    border-bottom: 1px solid var(--apple-border);
     padding: 12px 14px;
-    font-size: 14px;
   }
-  .date-cell {
-    font-size: 13px;
+  .table td {
+    border: none;
+    padding: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
   }
+  .table td::before {
+    content: attr(data-label);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--apple-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .name-cell {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  /* padding/font handled by mobile card layout above */
 }
 </style>

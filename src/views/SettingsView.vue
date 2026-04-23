@@ -62,8 +62,8 @@
                 </thead>
                 <tbody>
                   <tr v-for="u in users" :key="u.id">
-                    <td class="font-600">{{ u.name }}</td>
-                    <td class="muted">{{ u.email }}</td>
+                    <td class="font-600" data-label="User">{{ u.name }}</td>
+                    <td class="muted" data-label="Email">{{ u.email }}</td>
                     <td>
                       <select 
                         :value="u.role" 
@@ -894,6 +894,41 @@ export default {
   }
   .actions {
     margin-left: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Make the admin users table readable on phones */
+  .table thead {
+    display: none;
+  }
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+    width: 100%;
+  }
+  .table tr {
+    border-bottom: 1px solid var(--apple-border);
+  }
+  .table td {
+    border: none;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .table td::before {
+    content: attr(data-label);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--apple-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .text-right {
+    text-align: left;
   }
 }
 </style>
