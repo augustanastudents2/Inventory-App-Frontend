@@ -1,16 +1,18 @@
 <template>
   <div class="app-shell">
     <router-view />
+    <BackendWakeOverlay />
     <AppFooter />
   </div>
 </template>
 
 <script>
 import AppFooter from "./components/common/AppFooter.vue"
+import BackendWakeOverlay from "./components/common/BackendWakeOverlay.vue"
 
 export default {
   name: "App",
-  components: { AppFooter },
+  components: { AppFooter, BackendWakeOverlay },
 };
 </script>
 
