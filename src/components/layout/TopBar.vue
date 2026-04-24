@@ -309,21 +309,28 @@ export default {
   .topbar {
     padding: 0 12px;
     height: 64px;
+    flex-wrap: nowrap;
   }
-  /* Keep menu + profile on first row; move search below */
+  /* Keep search in the middle on phones */
   .menu-btn {
-    order: 1;
     flex: 0 0 auto;
   }
   .topbar-right {
-    order: 2;
-    margin-left: auto;
     flex: 0 0 auto;
   }
   .search-container {
-    order: 3;
-    flex: 1 1 100%;
-    max-width: none;
+    flex: 1 1 auto;
+    width: auto;
+    max-width: 260px;
+  }
+  .search-input {
+    font-size: 14px;
+    padding: 9px 10px 9px 36px;
+  }
+  .search-icon {
+    left: 10px;
+    width: 16px;
+    height: 16px;
   }
 }
 </style>
